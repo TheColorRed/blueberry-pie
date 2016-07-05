@@ -1,0 +1,19 @@
+{
+  "name": "blueberry",
+  "version": "1.0.0",
+  "description": "JavaScript Blueberry Framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ryan Naddy",
+  "license": "ISC",
+  "dependencies": {
+    "browserify": "^13.0.1",
+    "gulp": "^3.9.1",
+    "gulp-minify": "0.0.12",
+    "tsify": "^0.16.0",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}
