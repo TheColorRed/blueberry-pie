@@ -1,4 +1,4 @@
-import { Blueberry } from '../core/Blueberry.ts';
+import { Blueberry } from '../core/Blueberry';
 
 export class Http {
 

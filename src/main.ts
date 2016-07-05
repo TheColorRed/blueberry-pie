@@ -1,10 +1,13 @@
 /// <reference path="../node_modules/typings/main.d.ts" />
 
-import { Blueberry } from './core/Blueberry.ts';
-import { BerryObject } from './core/BerryObject.ts';
-import { Http } from './utils/Http.ts';
-import { Effects } from './components/Effects.ts';
+import { Blueberry } from './core/Blueberry';
+import { BerryObject } from './core/BerryObject';
+import { BerryBehavior } from './core/BerryBehavior';
+import { Http } from './components/Http';
+import { Effects } from './components/Effects';
 
-window.blueberry = new Blueberry();
 window.berryObject = BerryObject;
 window.effects = Effects;
+window.http = Http;
+window.blueberry = new Blueberry();
+window.BerryBehavior = BerryBehavior;

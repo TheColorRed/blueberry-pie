@@ -1,4 +1,4 @@
-import { BerryObject } from '../BerryObject.ts';
+import { BerryObject } from '../BerryObject';
 
 
 export class BerryManager {

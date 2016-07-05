@@ -16,11 +16,13 @@ gulp.task('ts-compile', () => {
         })
         .pipe(source('blueberry.js'))
         .pipe(buffer())
-        .pipe(minify({
-            ext: {
-                min: '.min.js'
-            }
-        }))
+        // .pipe(minify({
+        //     ext: {
+        //         min: '.min.js'
+        //     },
+        //     mangle: false,
+        //     compress: false
+        // }))
         .pipe(gulp.dest('build/'))
 
 });

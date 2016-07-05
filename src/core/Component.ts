@@ -1,10 +1,10 @@
-import { Berry } from './Berry.ts';
-import { BerryBehavior } from './BerryBehavior.ts';
+import { Berry } from './Berry';
+import { BerryBehavior } from './BerryBehavior';
 
 export class Component extends Berry {
 
     public options: any;
-    public behavior: Component;
+    public behavior: BerryBehavior;
 
     public constructor(componentName?: string) {
         super();

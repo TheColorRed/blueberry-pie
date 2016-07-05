@@ -1,7 +1,7 @@
-import { Component } from './Component.ts'
-import { Object } from './Object.ts'
+import { Component } from './Component'
+import { Item } from './Item'
 
-export class Berry extends Object {
+export class Berry extends Item {
 
     // public constructor(berry?: Element) {
     //     super();

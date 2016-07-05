@@ -1,7 +1,7 @@
-import { BerryBehavior } from './BerryBehavior.ts'
-import { Berry } from './Berry.ts'
-import { BerryObject } from './BerryObject.ts'
-import { BerryManager } from './managers/BerryManager.ts'
+import { BerryBehavior } from './BerryBehavior'
+import { Berry } from './Berry'
+import { BerryObject } from './BerryObject'
+import { BerryManager } from './managers/BerryManager'
 
 export class Blueberry extends BerryBehavior {
 
@@ -21,17 +21,37 @@ export class Blueberry extends BerryBehavior {
     protected init() {
         let $this = this;
         this.load(() => {
-            let nodes: NodeListOf<Element> = document.querySelectorAll('[blueberry]');
+            let nodes: NodeListOf<Element> = document.querySelectorAll('[blueberry],[data-blueberry]');
             let berries: BerryObject[] = [];
             for (let i = 0; i < nodes.length; i++) {
                 let node = nodes.item(i);
-                if (node.hasAttribute('blueberry')) {
+                if (node.hasAttribute('blueberry') || node.hasAttribute('data-blueberry')) {
                     let berry = new BerryObject(node);
-                    berry.name = node.getAttribute('blueberry');
+                    berry.name = node.getAttribute('blueberry') || node.getAttribute('data-blueberry') || '';
+                    berry.tag = node.getAttribute('tag') || node.getAttribute('data-tag') || '';
+                    node.addEventListener('click', e => {
+                        berry.getComponents().forEach(comp => {
+                            if (typeof comp.behavior.click == 'function') {
+                                e.preventDefault();
+                                comp.behavior.click();
+                            }
+                        });
+                    });
+                    if (node.hasAttribute('component') || node.hasAttribute('data-component')) {
+                        var component: string = node.getAttribute('component') || node.getAttribute('data-component') || '';
+                        component.split(' ').forEach(component => {
+                            berry.addComponent(component);
+                        });
+                    }
                     berries.push(berry);
                 }
             }
             BerryManager.setBerries(berries);
+            berries.forEach(berry => {
+                berry.getComponents().forEach(comp => {
+                    comp.behavior.start();
+                });
+            });
         });
     }
 
@@ -39,7 +59,4 @@ export class Blueberry extends BerryBehavior {
         this.loadSequence.push(callback);
     }
 
-    public start(callback: Function) {
-        this.load(callback);
-    }
 }

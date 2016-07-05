@@ -1,19 +1,23 @@
-import { Berry } from './Berry.ts';
-import { BerryBehavior } from './BerryBehavior.ts';
-import { Object } from './Object.ts';
-import { Component } from './Component.ts';
-import { BerryManager } from './managers/BerryManager.ts';
+import { Berry } from './Berry';
+import { BerryBehavior } from './BerryBehavior';
+import { Item } from './Item';
+import { Component } from './Component';
+import { BerryManager } from './managers/BerryManager';
 
-export class BerryObject extends Object {
-
-    protected components: Component[] = [];
-    protected berry: Element;
+export class BerryObject extends Item {
 
     public constructor(berry?: Element) {
         super();
         this.berry = berry;
     }
 
+    /**
+     * Finds an onbject in the dom that is a blueberry object
+     *
+     * @static
+     * @param {string} selector
+     * @returns {BerryObject[]}
+     */
     public static find(selector: string): BerryObject[] {
         let nodes: NodeListOf<Element> = document.querySelectorAll(selector);
         let berries: BerryObject[] = [];
@@ -31,6 +35,13 @@ export class BerryObject extends Object {
         return berries;
     }
 
+    /**
+     * Finds all blueberry objects with a particular name
+     *
+     * @static
+     * @param {string} name
+     * @returns {BerryObject[]}
+     */
     public static findObjectsWithName(name: string): BerryObject[] {
         let objs: BerryObject[] = [];
         for (var i in BerryManager.berries) {
@@ -41,6 +52,30 @@ export class BerryObject extends Object {
         return objs;
     }
 
+    /**
+     * Finds all blueberry objects with a particular tag
+     *
+     * @static
+     * @param {string} name
+     * @returns {BerryObject[]}
+     */
+    public static findObjectsWithTag(tag: string): BerryObject[] {
+        let objs: BerryObject[] = [];
+        for (var i in BerryManager.berries) {
+            if (BerryManager.berries[i].tag == tag) {
+                objs.push(BerryManager.berries[i]);
+            }
+        }
+        return objs;
+    }
+
+    /**
+     * Finds the first blueberry object with a particular name
+     *
+     * @static
+     * @param {string} name
+     * @returns {BerryObject}
+     */
     public static findWithName(name: string): BerryObject {
         for (var i in BerryManager.berries) {
             if (BerryManager.berries[i].name == name) {
@@ -50,15 +85,42 @@ export class BerryObject extends Object {
         return null;
     }
 
-    public addComponent(component: BerryBehavior, options?: {any}): Component {
-        var comp = component;
-        comp.behavior = component;
-        comp.options = options;
-        comp.sendMessage('awake');
+
+    /**
+     * Finds the first blueberry object with a particular tag
+     *
+     * @static
+     * @param {string} name
+     * @returns {BerryObject}
+     */
+    public static findWithTag(tag: string): BerryObject {
+        for (var i in BerryManager.berries) {
+            if (BerryManager.berries[i].tag == tag) {
+                return BerryManager.berries[i];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Adds a component to a blueberry object
+     *
+     * @param {string} component
+     * @param {{any}} [options]
+     * @returns {Component}
+     */
+    public addComponent<T extends BerryBehavior>(component: string, options?: { any }): Component {
+        let comp = this.createComponent<T>(component, options);
         this.components.push(comp);
         return comp;
     }
 
+    /**
+     * Gets a component from a blueberry object
+     *
+     * @param {any} component
+     * @returns {Component}
+     */
     public getComponent(component): Component {
         for (var i in this.components) {
             var comp = this.components[i];
@@ -67,5 +129,27 @@ export class BerryObject extends Object {
             }
         }
         return null;
+    }
+
+    /**
+     * Creates a blueberry component on an object
+     *
+     * @private
+     * @param {string} component
+     * @param {{any}} [options]
+     * @returns {Component}
+     */
+    private createComponent<T extends BerryBehavior>(component: string, options?: {any}): Component {
+        let comp = new window[component]() as T;
+        comp.options = options;
+        comp.setBerryObject(this);
+        comp.behavior = comp;
+        if (typeof comp.awake == 'function') {
+            comp.awake();
+        }
+        if (typeof comp.onEnable == 'function') {
+            comp.onEnable();
+        }
+        return comp;
     }
 }

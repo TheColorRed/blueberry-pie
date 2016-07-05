@@ -1,6 +1,22 @@
-blueberry.start(function () {
-    var berries = berryObject.findObjectsWithName('test');
-    berries.forEach(berry => {
-        berry.addComponent(effects);
-    });
-});
+/// <reference path="../../build/blueberry.min.js" />
+
+class Test extends BerryBehavior {
+
+    awake() {
+
+    }
+
+    start() {
+
+    }
+
+    click() {
+        if (berryObject.tag == 'test 1') {
+            window.location = 'http://google.com';
+        }
+        alert(berryObject.findObjectsWithTag('test 1').length)
+    }
+
+}
+
+window.test = Test;
