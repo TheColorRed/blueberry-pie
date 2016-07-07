@@ -2,6 +2,7 @@ import { BerryBehavior } from './BerryBehavior'
 import { Berry } from './Berry'
 import { BerryObject } from './BerryObject'
 import { BerryManager } from './managers/BerryManager'
+import { Time } from '../utils/Time'
 
 export class Blueberry extends BerryBehavior {
 
@@ -10,10 +11,12 @@ export class Blueberry extends BerryBehavior {
     ////////////////////////////////////////////////////////////////////////////
     // Blueberry main loop values
     ////////////////////////////////////////////////////////////////////////////
-    private lastLoopTime = (new Date()).getMilliseconds() * 1000;
-    private targetFps = 60;
+    private lastLoopTime = this.getNanoSeconds;// * 1000;
+    private targetFps = 240;
     private optimalTime = 1000000000 / this.targetFps;
     private lastFpsTime = 0;
+
+    private startTime = 0;
 
     /**
      * Creates an instance of Blueberry.
@@ -31,12 +34,20 @@ export class Blueberry extends BerryBehavior {
 
         window.onscroll = window.onresize = function () {
             BerryManager.berries.forEach(berry => {
+                // Skip the check if the berry isn't enabled
                 if (!berry.isEnabled) { return; }
+
+                // Check if the item is in the viewport
                 var isVisible = $this.isElementInViewport(berry);
+
+                // If the item enters the viewport let the componets know
                 if (berry.isVisible != isVisible && isVisible) {
                     berry.sendMessage('onEnterViewport');
                     berry.isVisible = true;
-                } else if (berry.isVisible != isVisible && !isVisible) {
+                }
+
+                // If the item leaves the viewport let the componets know
+                else if (berry.isVisible != isVisible && !isVisible) {
                     berry.sendMessage('onExitViewport');
                     berry.isVisible = false;
                 }
@@ -56,20 +67,40 @@ export class Blueberry extends BerryBehavior {
             let berryObjects: BerryObject[] = [];
             for (let i = 0; i < nodes.length; i++) {
                 let node = nodes.item(i);
-                if (node.hasAttribute('blueberry') || node.hasAttribute('data-blueberry')) {
-                    let berryObject = new BerryObject(node);
-                    berryObject.name = node.getAttribute('blueberry') || node.getAttribute('data-blueberry') || '';
-                    berryObject.tag = node.getAttribute('tag') || node.getAttribute('data-tag') || '';
-                    // this.setBerryClickHandler(berryObject, node);
-                    // berryObject.isEnabled = true;
-                    this.addBerryComponents(berryObject, node);
-                    berryObject.sendMessage('awake');
-                    berryObject.isVisible = this.isElementInViewport(berryObject);
-                    berryObjects.push(berryObject);
-                }
+
+                // Create an instance of BerryObject
+                let berryObject = new BerryObject(node);
+
+                // Setup the name and tag
+                berryObject.name = node.getAttribute('blueberry') || node.getAttribute('data-blueberry') || '';
+                berryObject.tag = node.getAttribute('tag') || node.getAttribute('data-tag') || '';
+
+                // Setup a click message for this object
+                node.addEventListener('click', e => {
+                    berryObject.sendMessage('click', { event: e });
+                });
+
+                // Check if the object is in the viewport
+                berryObject.isVisible = $this.isElementInViewport(berryObject);
+
+                // Adds components defined in the DOM
+                $this.addBerryComponents(berryObject, node);
+
+                // Send an awake message
+                berryObject.sendMessage('awake');
+
+                // Adds the berryObject to the array
+                berryObjects.push(berryObject);
             }
+
+            // Set the berry array in the manager
             BerryManager.setBerries(berryObjects);
-            this.berryLoop();
+
+            // Set the initial startTime
+            $this.startTime = (new Date()).getTime();
+
+            // Start the application
+            $this.berryLoop();
         });
     }
 
@@ -79,7 +110,9 @@ export class Blueberry extends BerryBehavior {
      * @private
      */
     private berryLoop() {
-        var now = this.getNanoSeconds;
+        Time.setFrameTime(((new Date).getTime() - this.startTime) / 1000);
+        var nanoSeconds = this.getNanoSeconds;
+        var now = nanoSeconds;
         var updateLength = now - this.lastLoopTime;
         this.lastLoopTime = now;
         var delta = updateLength / this.optimalTime;
@@ -89,27 +122,31 @@ export class Blueberry extends BerryBehavior {
             this.lastFpsTime = 0;
         }
 
-        this.berriesSetDelta(delta);
+        // Set the delta on each berry
+        Time.setDeltaTime(delta / this.targetFps);
+        // Time.setDeltaTime(delta);
 
-        // Run Event list
+        // Run event items
         // Initialization
         this.berriesAwake();
         this.berriesEnable();
         this.berriesStart();
 
-        // Logic
+        // Frame based updates
         this.berriesUpdate();
         this.berriesLateUpdate();
 
+        // Render to the screen
         this.berriesRender();
 
         // Disable
         this.berriesDisable();
         this.berriesDestroy();
 
+        // Cleanup
         this.berriesLastFame();
 
-        var next = (this.lastLoopTime - this.getNanoSeconds + this.optimalTime) / 1000000;
+        var next = (this.lastLoopTime - nanoSeconds + this.optimalTime) / 1000000;
         setTimeout(this.berryLoop.bind(this), next);
     }
 
@@ -121,27 +158,9 @@ export class Blueberry extends BerryBehavior {
      * @type {number}
      */
     private get getNanoSeconds(): number {
-        return (new Date()).getMilliseconds() * 1000
+        // console.log((new Date).getMilliseconds())
+        return (new Date()).getTime() * 1000000;
     }
-
-    /**
-     * Attaches a click handler to a blueberry object
-     *
-     * @private
-     * @param {BerryObject} berry
-     * @param {Element} node
-     */
-    // private setBerryClickHandler(berry: BerryObject, node: Element): void {
-    //     node.addEventListener('click', e => {
-    //         berry.getComponents().forEach(comp => {
-    //             comp.berryObject.sendMessage('click');
-    //             // if (typeof comp.behavior.click == 'function') {
-    //             //     e.preventDefault();
-    //             //     comp.behavior.click();
-    //             // }
-    //         });
-    //     });
-    // }
 
     /**
      * Adds components to an blueberry object during initialization
@@ -157,20 +176,6 @@ export class Blueberry extends BerryBehavior {
                 berry.addComponent(component);
             });
         }
-    }
-
-    /**
-     * Sets the delta for the current loop
-     *
-     * @private
-     * @param {number} delta
-     */
-    private berriesSetDelta(delta: number): void {
-        BerryManager.berries.forEach(berry => {
-            berry.getComponents().forEach(comp => {
-                comp.behavior.setDeltaTime(delta);
-            });
-        });
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -339,10 +344,8 @@ export class Blueberry extends BerryBehavior {
 
     private isElementInViewport(berry: BerryObject) {
         var rect: ClientRect = berry.htmlBerry.getBoundingClientRect();
-        return (rect.top >= 0 && rect.left >= 0 &&
-            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-        );
+        var viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
+        return !(rect.bottom < 0 || rect.top - viewHeight >= 0);
     }
 
 }

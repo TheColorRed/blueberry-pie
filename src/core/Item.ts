@@ -51,4 +51,5 @@ export class Item {
         item.shouldDestroy = true;
         item.destroyDelay = delay;
     }
+
 }

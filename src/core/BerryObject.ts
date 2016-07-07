@@ -150,12 +150,15 @@ export class BerryObject extends Item {
      *
      * @param {string} message
      */
-    public sendMessage(message: string): void {
+    public sendMessage(message: string, options?: any): void {
         if (!this.isEnabled) {
             return;
         }
         this.components.forEach(comp => {
             if (typeof comp.behavior[message] == 'function' && comp.isEnabled) {
+                if (message == 'click') {
+                    options.event.preventDefault();
+                }
                 comp.behavior[message]();
                 if (message == 'awake') {
                     comp.behavior.hasAwaken = true;
@@ -175,5 +178,10 @@ export class BerryObject extends Item {
                 }
             }
         });
+    }
+
+    public css(property: string, value: any): this {
+        this.htmlBerry.style[property] = value;
+        return this;
     }
 }
