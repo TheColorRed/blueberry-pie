@@ -3,19 +3,35 @@
 class Test extends BerryBehavior {
 
     awake() {
+        console.log('awake');
+    }
 
+    onEnable() {
+        console.log('enable');
     }
 
     start() {
-
+        console.log('start');
+        // this.berryObject.setActive(false);
     }
 
-    click() {
-        if (berryObject.tag == 'test 1') {
-            window.location = 'http://google.com';
-        }
-        alert(berryObject.findObjectsWithTag('test 1').length)
+    onDisable() {
+        console.log('disable');
+        // this.berryObject.setActive(true);
     }
+
+    update() {
+        console.log('update');
+        berryObject.destroy(this.berryObject);
+        // this.berryObject.setActive(false);
+    }
+
+    // click() {
+    //     if (this.berryObject.tag == 'test 1') {
+    //         window.location = 'http://google.com';
+    //     }
+    //     alert(berryObject.findObjectsWithTag('test 1').length)
+    // }
 
 }
 

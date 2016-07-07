@@ -5,23 +5,38 @@ interface IItem {
     setBerryObject(berryObject: BerryObject): void;
 }
 
-export class Item implements IItem {
+export class Item {
 
     public name: string = '';
     public tag: string = '';
 
     protected componentName: string;
     protected components: Component[] = [];
-    protected berry: Element;
+    protected berry: HTMLElement;
     protected _berryObject: BerryObject;
+
+    public isEnabled: boolean = false;
+    public shouldDisable: boolean = false;
+    public shouldEnable: boolean = false;
+    public lastFrameEnabled: boolean = false;
+    public hasStarted: boolean = false;
+    public hasAwaken: boolean = false;
+
+    public shouldDestroy: boolean = false;
+    public destroyDelay: number = 0;
 
     public get berryObject(): BerryObject {
         return this._berryObject;
     }
 
-    public setBerry(berry: Element): void {
+    public setBerry(berry: HTMLElement): void {
         this.berry = berry;
     }
+
+    public get htmlBerry(): HTMLElement {
+        return this.berry;
+    }
+
 
     public setBerryObject(berryObject: BerryObject): void {
         this._berryObject = berryObject;
@@ -31,16 +46,8 @@ export class Item implements IItem {
         return this.components;
     }
 
-    // protected static berries: Berry[] = [];
-
-    // public setBerries(berries: Berry[]): this {
-    //     Object.berries = berries;
-    //     return this;
-    // }
-
-    // public addBerry(berry: Berry): this {
-    //     Object.berries.push(berry);
-    //     return this;
-    // }
-
+    public static destroy(item: Item, delay: number = 0) {
+        item.shouldDestroy = true;
+        item.destroyDelay = delay;
+    }
 }

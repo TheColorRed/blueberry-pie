@@ -5,6 +5,23 @@ import { BerryManager } from './managers/BerryManager'
 
 export class BerryBehavior extends Component {
 
+    private _becameEnabled: boolean = false;
+    private _deltaTime: number = 0;
+
+    public hasAwaken: boolean = false;
+    public hasStarted: boolean = false;
+    public isEnabled: boolean = false;
+    public lastFrameEnabled: boolean = false;
+
+    protected get deltaTime(): number {
+        return this._deltaTime;
+    }
+
+
+    public get becameEnabled(): boolean {
+        return this._becameEnabled;
+    }
+
     public each(callback: Function): this {
         BerryManager.berries.forEach(berry => {
             callback(berry);
@@ -12,24 +29,9 @@ export class BerryBehavior extends Component {
         return this;
     }
 
-    public sendMessage(name: string) {
-        this.behavior.components.forEach(comp => {
-            // if (typeof comp.behavior[name] == 'function') {
-                comp.behavior[name]();
-            // }
-        });
+    public setDeltaTime(delta: number): void {
+        this._deltaTime = delta;
     }
-
-    // Automatic events
-    public awake() { }
-    public onEnable() { }
-    public start() { }
-
-    // User generated events
-    public click(button?: number) { }
-    public mouseover() { }
-    public mouseout() { }
-    public hover() { }
 
 }
 

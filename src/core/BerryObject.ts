@@ -6,9 +6,13 @@ import { BerryManager } from './managers/BerryManager';
 
 export class BerryObject extends Item {
 
-    public constructor(berry?: Element) {
+    public constructor(berry?: HTMLElement) {
         super();
         this.berry = berry;
+    }
+
+    public static destroy(item: Item, delay: number = 0) {
+        Item.destroy(item, delay);
     }
 
     /**
@@ -19,7 +23,7 @@ export class BerryObject extends Item {
      * @returns {BerryObject[]}
      */
     public static find(selector: string): BerryObject[] {
-        let nodes: NodeListOf<Element> = document.querySelectorAll(selector);
+        let nodes: NodeListOf<HTMLElement> = document.querySelectorAll(selector) as NodeListOf<HTMLElement>;
         let berries: BerryObject[] = [];
         for (let i = 0; i < nodes.length; i++) {
             let node = nodes.item(i);
@@ -110,7 +114,10 @@ export class BerryObject extends Item {
      * @returns {Component}
      */
     public addComponent<T extends BerryBehavior>(component: string, options?: { any }): Component {
-        let comp = this.createComponent<T>(component, options);
+        let comp = new window[component]() as T;
+        comp.options = options;
+        comp.setBerryObject(this);
+        comp.behavior = comp;
         this.components.push(comp);
         return comp;
     }
@@ -131,25 +138,38 @@ export class BerryObject extends Item {
         return null;
     }
 
-    /**
-     * Creates a blueberry component on an object
-     *
-     * @private
-     * @param {string} component
-     * @param {{any}} [options]
-     * @returns {Component}
-     */
-    private createComponent<T extends BerryBehavior>(component: string, options?: {any}): Component {
-        let comp = new window[component]() as T;
-        comp.options = options;
-        comp.setBerryObject(this);
-        comp.behavior = comp;
-        if (typeof comp.awake == 'function') {
-            comp.awake();
-        }
-        if (typeof comp.onEnable == 'function') {
-            comp.onEnable();
-        }
-        return comp;
+    public setActive(value: boolean): void {
+        this.shouldDisable = !value;
+    }
+
+
+    public sendMessage(message: string) {
+        this.components.forEach(comp => {
+            if (typeof comp.behavior[message] == 'function') {
+                var send: boolean = true;
+                // if (message == 'start' && !comp.behavior.isEnabled) {
+                //     send = false;
+                // }
+                // if (message == 'awake' && !comp.behavior.isEnabled) {
+                //     send = false;
+                // }
+                // if ((message == 'update' || message == 'lateUpdate') && !comp.behavior.isEnabled) {
+                //     send = false;
+                // }
+
+                if (send) {
+                    comp.behavior[message]();
+                    if (message == 'awake') {
+                        comp.behavior.hasAwaken = true;
+                    }
+                    if (message == 'start') {
+                        comp.behavior.hasStarted = true;
+                    }
+                    if (message == 'onDisable') {
+                        comp.behavior.hasStarted = false;
+                    }
+                }
+            }
+        });
     }
 }
