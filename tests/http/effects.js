@@ -1,4 +1,4 @@
-/// <reference path="../../build/blueberry.min.js" />
+// /// <reference path="../../build/blueberry.min.js" />
 
 class Test extends BerryBehavior {
 
@@ -20,11 +20,19 @@ class Test extends BerryBehavior {
         // this.berryObject.setActive(true);
     }
 
-    update() {
-        console.log('update');
-        berryObject.destroy(this.berryObject);
-        // this.berryObject.setActive(false);
+    onEnterViewport() {
+        console.log('enter viewport');
     }
+
+    onExitViewport() {
+        console.log('exit viewport');
+    }
+
+    // update() {
+    //     // console.log('update');
+    //     // berryObject.destroy(this.berryObject);
+    //     // this.berryObject.setActive(false);
+    // }
 
     // click() {
     //     if (this.berryObject.tag == 'test 1') {

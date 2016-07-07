@@ -7,20 +7,51 @@ export class Blueberry extends BerryBehavior {
 
     protected loadSequence: Function[] = [];
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Blueberry main loop values
+    ////////////////////////////////////////////////////////////////////////////
+    private lastLoopTime = (new Date()).getMilliseconds() * 1000;
+    private targetFps = 60;
+    private optimalTime = 1000000000 / this.targetFps;
+    private lastFpsTime = 0;
+
+    /**
+     * Creates an instance of Blueberry.
+     *
+     */
     public constructor() {
         super();
         this.init();
-        let $this = this;
+        let $this: Blueberry = this;
         window.onload = function () {
             $this.loadSequence.forEach(callback => {
                 callback();
             });
         }
+
+        window.onscroll = window.onresize = function () {
+            BerryManager.berries.forEach(berry => {
+                if (!berry.isEnabled) { return; }
+                var isVisible = $this.isElementInViewport(berry);
+                if (berry.isVisible != isVisible && isVisible) {
+                    berry.sendMessage('onEnterViewport');
+                    berry.isVisible = true;
+                } else if (berry.isVisible != isVisible && !isVisible) {
+                    berry.sendMessage('onExitViewport');
+                    berry.isVisible = false;
+                }
+            });
+        }
     }
 
+    /**
+     * Initialization of the blueberry framework
+     *
+     * @protected
+     */
     protected init() {
         let $this = this;
-        this.load(() => {
+        this.loadSequence.push(() => {
             let nodes: NodeListOf<HTMLElement> = document.querySelectorAll('[blueberry],[data-blueberry]') as NodeListOf<HTMLElement>;
             let berryObjects: BerryObject[] = [];
             for (let i = 0; i < nodes.length; i++) {
@@ -29,8 +60,11 @@ export class Blueberry extends BerryBehavior {
                     let berryObject = new BerryObject(node);
                     berryObject.name = node.getAttribute('blueberry') || node.getAttribute('data-blueberry') || '';
                     berryObject.tag = node.getAttribute('tag') || node.getAttribute('data-tag') || '';
-                    this.setBerryClickHandler(berryObject, node);
+                    // this.setBerryClickHandler(berryObject, node);
+                    // berryObject.isEnabled = true;
                     this.addBerryComponents(berryObject, node);
+                    berryObject.sendMessage('awake');
+                    berryObject.isVisible = this.isElementInViewport(berryObject);
                     berryObjects.push(berryObject);
                 }
             }
@@ -39,11 +73,11 @@ export class Blueberry extends BerryBehavior {
         });
     }
 
-    private lastLoopTime = (new Date()).getMilliseconds() * 1000;
-    private targetFps = 60;
-    private optimalTime = 1000000000 / this.targetFps;
-    private lastFpsTime = 0;
-
+    /**
+     * The main loop that controls the flow of blueberry
+     *
+     * @private
+     */
     private berryLoop() {
         var now = this.getNanoSeconds;
         var updateLength = now - this.lastLoopTime;
@@ -79,22 +113,43 @@ export class Blueberry extends BerryBehavior {
         setTimeout(this.berryLoop.bind(this), next);
     }
 
+    /**
+     * Gets the number of nanoseconds
+     *
+     * @readonly
+     * @private
+     * @type {number}
+     */
     private get getNanoSeconds(): number {
         return (new Date()).getMilliseconds() * 1000
     }
 
-    private setBerryClickHandler(berry: BerryObject, node: Element): void {
-        node.addEventListener('click', e => {
-            berry.getComponents().forEach(comp => {
-                comp.berryObject.sendMessage('click');
-                // if (typeof comp.behavior.click == 'function') {
-                //     e.preventDefault();
-                //     comp.behavior.click();
-                // }
-            });
-        });
-    }
+    /**
+     * Attaches a click handler to a blueberry object
+     *
+     * @private
+     * @param {BerryObject} berry
+     * @param {Element} node
+     */
+    // private setBerryClickHandler(berry: BerryObject, node: Element): void {
+    //     node.addEventListener('click', e => {
+    //         berry.getComponents().forEach(comp => {
+    //             comp.berryObject.sendMessage('click');
+    //             // if (typeof comp.behavior.click == 'function') {
+    //             //     e.preventDefault();
+    //             //     comp.behavior.click();
+    //             // }
+    //         });
+    //     });
+    // }
 
+    /**
+     * Adds components to an blueberry object during initialization
+     *
+     * @private
+     * @param {BerryObject} berry
+     * @param {Element} node
+     */
     private addBerryComponents(berry: BerryObject, node: Element): void {
         if (node.hasAttribute('component') || node.hasAttribute('data-component')) {
             var component: string = node.getAttribute('component') || node.getAttribute('data-component') || '';
@@ -104,6 +159,12 @@ export class Blueberry extends BerryBehavior {
         }
     }
 
+    /**
+     * Sets the delta for the current loop
+     *
+     * @private
+     * @param {number} delta
+     */
     private berriesSetDelta(delta: number): void {
         BerryManager.berries.forEach(berry => {
             berry.getComponents().forEach(comp => {
@@ -112,47 +173,111 @@ export class Blueberry extends BerryBehavior {
         });
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Begin Blueberry messages
+    ////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Tells all blueberry components to call their "awake" script.
+     * "awake" is only called once for every component upon creation.
+     * It should be assumed that no other object has been created at this time
+     *
+     * @private
+     */
     private berriesAwake(): void {
         BerryManager.berries.forEach(berry => {
             if (!berry.hasAwaken) {
                 berry.sendMessage('awake');
-                berry.hasAwaken = true;
             }
         });
     }
 
+    /**
+     * Tells all blueberry components to call thier "enable" script.
+     * "onEnable" is called whenever a component/object gets enabled.
+     *
+     * @private
+     */
     private berriesEnable(): void {
         BerryManager.berries.forEach(berry => {
-            if (!berry.isEnabled && this.isVisible(berry.htmlBerry) && !berry.lastFrameEnabled) {
+            if (this.isElementActive(berry.htmlBerry) && !berry.lastFrameEnabled) {
                 berry.sendMessage('onEnable');
-                berry.isEnabled = true;
             }
         });
     }
 
+    /**
+     * Tells all blueberry components to call their "start" script.
+     * "start" is only called once for every component upon creation.
+     * You can assume that all object are availible for use at this point
+     *
+     * @private
+     */
     private berriesStart(): void {
         BerryManager.berries.forEach(berry => {
             if (!berry.hasStarted) {
                 berry.sendMessage('start');
-                berry.hasStarted = true;
             }
         });
     }
 
+    /**
+     * Tells all blueberry components to call their "onDisable" script.
+     * "onDisable" is called whenever a object/component gets disabled
+     *
+     * @private
+     */
     private berriesDisable(): void {
         BerryManager.berries.forEach(berry => {
-            if (berry.shouldDisable || (berry.isEnabled && !this.isVisible(berry.htmlBerry) && !berry.lastFrameEnabled)) {
+            if (berry.shouldDisable || (berry.isEnabled && !this.isElementActive(berry.htmlBerry) && !berry.lastFrameEnabled)) {
                 berry.sendMessage('onDisable');
             }
         });
     }
 
+    /**
+     * Tells all blueberry components to call their "update" script.
+     * "update" gets called every frame on an enabled object/component.
+     * We can not assume all "update" calls have been called at this point.
+     *
+     * @private
+     */
+    private berriesUpdate(): void {
+        BerryManager.berries.forEach(berry => {
+            berry.sendMessage('update');
+        });
+    }
+
+    /**
+     * Tells all blueberry components to call their "lateUpdate" script.
+     * "lateUpdate" gets called every frame after "update" is called.
+     * All "update" calls have been completed at this point.
+     *
+     * @private
+     */
+    private berriesLateUpdate(): void {
+        BerryManager.berries.forEach(berry => {
+            berry.sendMessage('lateUpdate');
+        });
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // End Blueberry messages
+    ////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Destroys all blueberry objects marked for destuction.
+     * "onDisable" will be triggered prior to destuction.
+     *
+     * @private
+     */
     private berriesDestroy() {
         BerryManager.berries.forEach(berry => {
             if (berry.shouldDestroy) {
                 setTimeout(function () {
                     if (berry.htmlBerry.parentElement !== null) {
                         berry.sendMessage('onDisable');
+                        berry.sendMessage('onDestroy');
                         BerryManager.removeBerry(berry);
                         berry.htmlBerry.parentElement.removeChild(berry.htmlBerry);
                     }
@@ -161,22 +286,11 @@ export class Blueberry extends BerryBehavior {
         });
     }
 
-    private berriesUpdate(): void {
-        BerryManager.berries.forEach(berry => {
-            if (berry.isEnabled) {
-                berry.sendMessage('update');
-            }
-        });
-    }
-
-    private berriesLateUpdate(): void {
-        BerryManager.berries.forEach(berry => {
-            if (berry.isEnabled) {
-                berry.sendMessage('lateUpdate');
-            }
-        });
-    }
-
+    /**
+     * Updates the DOM and/or styles.
+     *
+     * @private
+     */
     private berriesRender() {
         BerryManager.berries.forEach(berry => {
             if (berry.shouldDisable) {
@@ -188,6 +302,11 @@ export class Blueberry extends BerryBehavior {
         });
     }
 
+    /**
+     * Finalization of the frame for using values on the next frame.
+     *
+     * @private
+     */
     private berriesLastFame() {
         BerryManager.berries.forEach(berry => {
             if (berry.shouldDisable) {
@@ -195,7 +314,7 @@ export class Blueberry extends BerryBehavior {
                 berry.shouldDisable = false;
             }
             berry.getComponents().forEach(comp => {
-                if (!this.isVisible(berry.htmlBerry)) {
+                if (!this.isElementActive(berry.htmlBerry)) {
                     berry.lastFrameEnabled = false;
                 } else {
                     berry.lastFrameEnabled = true;
@@ -207,12 +326,23 @@ export class Blueberry extends BerryBehavior {
         });
     }
 
-    private isVisible(element: HTMLElement) {
+    /**
+     * Checks if an object is visible using "display" and "visibility"
+     *
+     * @private
+     * @param {HTMLElement} element
+     * @returns
+     */
+    private isElementActive(element: HTMLElement) {
         return (element.style.display != 'none' && element.style.visibility != 'hidden');
     }
 
-    public load(callback: Function) {
-        this.loadSequence.push(callback);
+    private isElementInViewport(berry: BerryObject) {
+        var rect: ClientRect = berry.htmlBerry.getBoundingClientRect();
+        return (rect.top >= 0 && rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
     }
 
 }

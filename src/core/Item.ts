@@ -15,12 +15,13 @@ export class Item {
     protected berry: HTMLElement;
     protected _berryObject: BerryObject;
 
-    public isEnabled: boolean = false;
+    public isEnabled: boolean = true;
     public shouldDisable: boolean = false;
     public shouldEnable: boolean = false;
     public lastFrameEnabled: boolean = false;
     public hasStarted: boolean = false;
     public hasAwaken: boolean = false;
+    public isVisible: boolean = false;
 
     public shouldDestroy: boolean = false;
     public destroyDelay: number = 0;

@@ -118,6 +118,8 @@ export class BerryObject extends Item {
         comp.options = options;
         comp.setBerryObject(this);
         comp.behavior = comp;
+        comp.isVisible = this.isVisible;
+        comp.isEnabled = this.isEnabled;
         this.components.push(comp);
         return comp;
     }
@@ -142,32 +144,34 @@ export class BerryObject extends Item {
         this.shouldDisable = !value;
     }
 
-
-    public sendMessage(message: string) {
+    /**
+     * Sends a message to all the enabled components on the current object
+     * If the object itself is disabled so are all of it's components
+     *
+     * @param {string} message
+     */
+    public sendMessage(message: string): void {
+        if (!this.isEnabled) {
+            return;
+        }
         this.components.forEach(comp => {
-            if (typeof comp.behavior[message] == 'function') {
-                var send: boolean = true;
-                // if (message == 'start' && !comp.behavior.isEnabled) {
-                //     send = false;
-                // }
-                // if (message == 'awake' && !comp.behavior.isEnabled) {
-                //     send = false;
-                // }
-                // if ((message == 'update' || message == 'lateUpdate') && !comp.behavior.isEnabled) {
-                //     send = false;
-                // }
-
-                if (send) {
-                    comp.behavior[message]();
-                    if (message == 'awake') {
-                        comp.behavior.hasAwaken = true;
-                    }
-                    if (message == 'start') {
-                        comp.behavior.hasStarted = true;
-                    }
-                    if (message == 'onDisable') {
-                        comp.behavior.hasStarted = false;
-                    }
+            if (typeof comp.behavior[message] == 'function' && comp.isEnabled) {
+                comp.behavior[message]();
+                if (message == 'awake') {
+                    comp.behavior.hasAwaken = true;
+                    this.hasAwaken = true;
+                }
+                if (message == 'start') {
+                    comp.behavior.hasStarted = true;
+                    this.hasStarted = true;
+                }
+                if (message == 'onEnable') {
+                    comp.behavior.isEnabled = true;
+                    this.isEnabled = true;
+                }
+                if (message == 'onDisable') {
+                    comp.behavior.isEnabled = false;
+                    this.isEnabled = false;
                 }
             }
         });
