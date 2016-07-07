@@ -1,8 +1,15 @@
 {
-  "name": "blueberry",
-  "version": "1.0.0",
+  "name": "blueberryjs",
+  "version": "0.0.1",
   "description": "JavaScript Blueberry Framework",
-  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TheColorRed/Blueberry"
+  },
+  "keywords": [
+    "framework", "blueberry"
+  ],
+  "main": "build/blueberry.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
