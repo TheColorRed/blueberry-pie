@@ -16,7 +16,11 @@ Blueberry can also be cloned from the repo and then gulp(d) using `gulp build`.
 
 ## Usage
 
-We can create a basic HTML file and load blueberry in it. Then we load our blueberry component(s).
+We can create a basic HTML file and load blueberry in it.
+Then we load our blueberry component(s).
+The div has two noticable attributes `blueberry` and `component`,
+each can be used as is or can be used with the prefix `data-`.
+Both work since Blueberry is smart enough to figure it out.
 
 ### **index.html**
 
@@ -45,6 +49,11 @@ We can create a basic HTML file and load blueberry in it. Then we load our blueb
     </body>
 </html>
 ```
+
+A component is fairly easy to build, as it is just a simple class that extends
+`BerryBehavior` which allows you to adds extra behaviors to your object.
+The following component only uses a couple of the many `messages` that you
+can add to your custom component.
 
 ### **MyClickComponent.js**
 
