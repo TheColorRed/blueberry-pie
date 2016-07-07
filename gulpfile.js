@@ -5,7 +5,7 @@ var tsify      = require('tsify');
 var source     = require('vinyl-source-stream');
 var buffer     = require('vinyl-buffer');
 
-gulp.task('ts-compile', () => {
+gulp.task('build', () => {
 
     return browserify()
         .add('./src/main.ts')
@@ -27,6 +27,6 @@ gulp.task('ts-compile', () => {
 
 });
 
-gulp.task('default', ['ts-compile'], function () {
-    gulp.watch('**/*.ts', ['ts-compile']);
+gulp.task('default', ['build'], function () {
+    gulp.watch('**/*.ts', ['build']);
 });
