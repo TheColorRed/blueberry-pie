@@ -6,17 +6,15 @@ import { BerryBehavior } from './core/BerryBehavior';
 
 // Components
 import { Http } from './components/Http';
-import { Effects } from './components/Effects';
 
 // Utilities
 import { Time } from './utils/Time';
 import { Mathf } from './utils/Mathf';
 import { When } from './utils/When';
 
-window.berryObject = BerryObject;
-window.effects = Effects;
-window.http = Http;
-window.blueberry = new Blueberry();
+window.blueberry     = new Blueberry();
+window.BerryObject   = BerryObject;
+window.Http          = Http;
 window.BerryBehavior = BerryBehavior;
-window.Time = Time;
-window.Mathf = Mathf;
+window.Time          = Time;
+window.Mathf         = Mathf;

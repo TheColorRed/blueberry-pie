@@ -1,8 +1,8 @@
 class Master extends BerryBehavior {
 
     start() {
-        berryObject.convert('p:nth-child(odd)').tag('odd').addComponent('test');
-        berryObject.convert('p:nth-child(even)').tag('even').addComponent('test');
+        BerryObject.convert('p:nth-child(odd)').tag('odd').addComponent('test');
+        BerryObject.convert('p:nth-child(even)').tag('even').addComponent('test');
     }
 
 }
@@ -22,7 +22,7 @@ class Test extends BerryBehavior {
         // Create a comparison watcher to watch some additional variables
         this.watch = this.when('a', 0).equals('amount', defaultAmt, function () {
             // When 'a == amount' destroy the current object after 3 seconds
-            berryObject.destroy(self.berryObject, 3);
+            BerryObject.destroy(self.berryObject, 3);
         });
     }
 
