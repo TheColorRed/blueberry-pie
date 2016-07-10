@@ -11,6 +11,7 @@ import { Effects } from './components/Effects';
 // Utilities
 import { Time } from './utils/Time';
 import { Mathf } from './utils/Mathf';
+import { When } from './utils/When';
 
 window.berryObject = BerryObject;
 window.effects = Effects;

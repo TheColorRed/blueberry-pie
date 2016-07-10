@@ -3,6 +3,7 @@ import { BerryBehavior } from './BerryBehavior';
 import { Item } from './Item';
 import { Component } from './Component';
 import { BerryManager } from './managers/BerryManager';
+import { BerryGroup } from './BerryGroup';
 
 export class BerryObject extends Item {
 
@@ -89,6 +90,20 @@ export class BerryObject extends Item {
         return null;
     }
 
+    public static convert(selector: string): BerryGroup {
+        let nodes: NodeListOf<HTMLElement> = document.querySelectorAll(selector) as NodeListOf<HTMLElement>;
+        let berryGroup: BerryGroup = new BerryGroup();
+        for (let i = 0; i < nodes.length; i++) {
+            let node: HTMLElement = nodes.item(i);
+            if (!node.hasAttribute('blueberry') && !node.hasAttribute('data-blueberry')) {
+                let berry = new BerryObject(node);
+                node.setAttribute('blueberry', 'BerryObject');
+                berryGroup.add(berry);
+            }
+        }
+        return berryGroup;
+    }
+
 
     /**
      * Finds the first blueberry object with a particular tag
@@ -121,6 +136,7 @@ export class BerryObject extends Item {
         comp.isVisible = this.isVisible;
         comp.isEnabled = this.isEnabled;
         this.components.push(comp);
+        this.sendMessage('awake');
         return comp;
     }
 
@@ -130,10 +146,10 @@ export class BerryObject extends Item {
      * @param {any} component
      * @returns {Component}
      */
-    public getComponent(component): Component {
+    public getComponent(component: string): Component {
         for (var i in this.components) {
             var comp = this.components[i];
-            if (component == comp) {
+            if (component == comp.name) {
                 return comp;
             }
         }

@@ -2,6 +2,7 @@ import { Berry } from './Berry';
 import { Item } from './Item';
 import { Component } from './Component'
 import { BerryManager } from './managers/BerryManager'
+import { When } from '../utils/When'
 
 export class BerryBehavior extends Component {
 
@@ -21,6 +22,10 @@ export class BerryBehavior extends Component {
             callback(berry);
         });
         return this;
+    }
+
+    public when(key: any, startValue: any) {
+        return new When({}, key, startValue);
     }
 
 }
