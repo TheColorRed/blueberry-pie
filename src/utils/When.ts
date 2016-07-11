@@ -1,6 +1,7 @@
-export class When {
+import { Watch } from './Watcher';
 
-    private proxy: any;
+export class When extends Watch {
+
     private a: string = null;
     private b: string = null;
 
@@ -21,14 +22,9 @@ export class When {
     private ranLessThanCallback: boolean = false;
     private ranLessThanOrEqualCallback: boolean = false;
 
-    public constructor(master: any, a: string, defaultValue: any) {
-        var $this = this;
-        this.proxy = new Proxy<any>(master, {
-            get: function(obj, prop){
-                return prop in obj ? obj[prop] : null;
-            },
+    public constructor(masterObject: any, a: string, defaultValue: any) {
+        super(masterObject, {
             set: function (obj, prop, value, receiver): boolean {
-                obj[prop] = value;
                 if (obj[$this.a] == obj[$this.b] && !$this.ranEqualCallback) {
                     if (typeof $this.equalsCallback == 'function') {
                         $this.equalsCallback();
@@ -67,55 +63,57 @@ export class When {
                 }
                 return true;
             },
-            defineProperty: function(obj, prop, value): boolean {
+            defineProperty: function (obj, prop, value): boolean {
                 obj[prop] = value;
                 return true;
             }
         });
+        var $this = this;
+
         this.a = a;
         this.proxy[a] = defaultValue;
     }
 
-    public equals(b: string, defaultValue: any, callback: Function): any {
+    public equals(b: string, defaultValue: any, callback: Function): this {
         this.b = b;
         this.proxy[b] = defaultValue;
         this.equalsCallback = callback;
-        return this.proxy;
+        return this;
     }
 
-    public notEqual(b: string, defaultValue: any, callback: Function): any {
+    public notEqual(b: string, defaultValue: any, callback: Function): this {
         this.b = b;
         this.proxy[b] = defaultValue;
         this.notEqualCallback = callback;
-        return this.proxy;
+        return this;
     }
 
-    public greaterThan(b: string, defaultValue: any, callback: Function): any {
+    public greaterThan(b: string, defaultValue: any, callback: Function): this {
         this.b = b;
         this.proxy[b] = defaultValue;
         this.greaterThanCallback = callback;
-        return this.proxy;
+        return this;
     }
 
-    public greaterThanOrEqual(b: string, defaultValue: any, callback: Function): any {
+    public greaterThanOrEqual(b: string, defaultValue: any, callback: Function): this {
         this.b = b;
         this.proxy[b] = defaultValue;
         this.greaterThanOrEqualCallback = callback;
-        return this.proxy;
+        return this;
     }
 
-    public lessThan(b: string, defaultValue: any, callback: Function): any {
+    public lessThan(b: string, defaultValue: any, callback: Function): this {
         this.b = b;
         this.proxy[b] = defaultValue;
         this.lessThanCallback = callback;
-        return this.proxy;
+        return this;
     }
 
-    public lessThanOrEqual(b: string, defaultValue: any, callback: Function): any {
+    public lessThanOrEqual(b: string, defaultValue: any, callback: Function): this {
         this.b = b;
         this.proxy[b] = defaultValue;
         this.lessThanOrEqualCallback = callback;
-        return this.proxy;
+        return this;
     }
 
 }
