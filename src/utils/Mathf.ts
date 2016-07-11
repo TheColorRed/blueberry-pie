@@ -15,4 +15,12 @@ export class Mathf {
         return Math.max(Math.min(1, value), 0);
     }
 
+    public static invert(value: number, max: number): number {
+        return Math.abs(value - max);
+    }
+
+    public static invert01(value: number): number {
+        return Math.abs(value - 1);
+    }
+
 }

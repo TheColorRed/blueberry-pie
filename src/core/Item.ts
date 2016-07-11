@@ -1,9 +1,6 @@
 import { BerryObject } from './BerryObject';
 import { Component } from './Component';
-
-interface IItem {
-    setBerryObject(berryObject: BerryObject): void;
-}
+import { Vector2 } from '../utils/Vector';
 
 export class Item {
 
@@ -47,9 +44,18 @@ export class Item {
         return this.components;
     }
 
+    public get position(): Vector2 {
+        var rect: ClientRect;
+        try {
+            rect = this.htmlBerry.getBoundingClientRect();
+        } catch (e) {
+            rect = this.berryObject.htmlBerry.getBoundingClientRect();
+        }
+        return new Vector2(rect.left, rect.top);
+    }
+
     public static destroy(item: Item, delay: number = 0) {
         item.shouldDestroy = true;
         item.destroyDelay = delay;
     }
-
 }

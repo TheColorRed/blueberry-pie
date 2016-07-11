@@ -4,6 +4,7 @@ import { Item } from './Item';
 import { Component } from './Component';
 import { BerryManager } from './managers/BerryManager';
 import { BerryGroup } from './BerryGroup';
+import { Settings } from '../utils/Settings';
 
 export class BerryObject extends Item {
 
@@ -96,9 +97,9 @@ export class BerryObject extends Item {
         for (let i = 0; i < nodes.length; i++) {
             let node: HTMLElement = nodes.item(i);
             if (!node.hasAttribute('blueberry') && !node.hasAttribute('data-blueberry')) {
-                let berry = new BerryObject(node);
+                let berryObject = new BerryObject(node);
                 node.setAttribute('blueberry', 'BerryObject');
-                berryGroup.add(berry);
+                berryGroup.add(berryObject);
             }
         }
         return berryGroup;
@@ -176,27 +177,30 @@ export class BerryObject extends Item {
                     options.event.preventDefault();
                 }
                 comp.behavior[message]();
-                if (message == 'awake') {
-                    comp.behavior.hasAwaken = true;
-                    this.hasAwaken = true;
-                }
-                if (message == 'start') {
-                    comp.behavior.hasStarted = true;
-                    this.hasStarted = true;
-                }
-                if (message == 'onEnable') {
-                    comp.behavior.isEnabled = true;
-                    this.isEnabled = true;
-                }
-                if (message == 'onDisable') {
-                    comp.behavior.isEnabled = false;
-                    this.isEnabled = false;
-                }
+            }
+            if (message == 'awake') {
+                comp.behavior.hasAwaken = true;
+                this.hasAwaken = true;
+            }
+            if (message == 'start') {
+                comp.behavior.hasStarted = true;
+                this.hasStarted = true;
+            }
+            if (message == 'onEnable') {
+                comp.behavior.isEnabled = true;
+                this.isEnabled = true;
+            }
+            if (message == 'onDisable') {
+                comp.behavior.isEnabled = false;
+                this.isEnabled = false;
             }
         });
     }
 
     public css(property: string, value: any): this {
+        if (typeof value == 'number') {
+            value = value + Settings.units;
+        }
         this.htmlBerry.style[property] = value;
         return this;
     }

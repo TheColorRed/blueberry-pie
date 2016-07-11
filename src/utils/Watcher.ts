@@ -1,4 +1,23 @@
-export abstract class Watcher {
+/**
+ * Creates a new watch object
+ *
+ * @export
+ * @param {*} [object={}]
+ * @param {ProxyHandler<any>} [handler=null]
+ * @returns {Watch}
+ */
+export function watch(object: any = {}, handler: ProxyHandler<any> = null): Watch {
+    return new Watch(object, handler);
+}
+
+
+/**
+ * The main watch object, the place where the magic happens
+ *
+ * @abstract
+ * @class Watcher
+ */
+abstract class Watcher {
 
     protected proxy: any;
 
@@ -44,37 +63,75 @@ export abstract class Watcher {
         this.proxy = new Proxy<any>(masterObject, mainHandler);
     }
 
-    public listen() {
+    /**
+     * Creates a new item to watch
+     *
+     * @protected
+     * @param {string} watch
+     * @param {*} [defaultValue=null]
+     * @param {Function} [callback=null]
+     * @param {WatcherType} [type=WatcherType.Default]
+     * @returns {this}
+     */
+    protected create(watch: string, defaultValue: any = null, callback: Function = null, type: WatcherType = WatcherType.Default): this {
+        this.watching.push(new WatcherItem(watch, type, callback));
+        if (!(watch in this.proxy)) {
+            Object.defineProperty(this.proxy, watch, { value: defaultValue });
+        }
+        return this;
+    }
+
+    /**
+     * Starts listening for changes
+     *
+     * @returns {*}
+     */
+    public listen(): any {
         return this.proxy;
     }
 
 }
 
-export function watch(object: any = {}, handler: ProxyHandler<any> = null) {
-    return new Watch(object, handler);
-}
+/**
+ * The type of watch object
+ *
+ * @export
+ * @enum {number}
+ */
+export enum WatcherType { Changed, Default }
 
+/**
+ * A watch object that can watch an object
+ *
+ * @export
+ * @class Watch
+ * @extends {Watcher}
+ */
 export class Watch extends Watcher {
 
+    /**
+     * This this event gets triggered every time a particular value has changed
+     *
+     * @param {string} watch
+     * @param {Function} callback
+     * @returns {this}
+     */
     public changed(watch: string, callback: Function): this {
-        this.watching.push(new WatcherItem(watch, WatcherType.Changed, callback));
-        if (!(watch in this.proxy)) {
-            Object.defineProperty(this.proxy, watch, { configurable: true, enumerable: true, value: null });
-        }
-        return this;
+        return this.create(watch, null, callback, WatcherType.Changed);
     }
 
+    /**
+     * This event gets triggered when a value gets destroyed
+     *
+     * @param {string} watch
+     * @param {Function} callback
+     * @returns {this}
+     */
     public destroyed(watch: string, callback: Function): this {
-        this.watching.push(new WatcherItem(watch, WatcherType.Destroyed, callback));
-        if (!(watch in this.proxy)) {
-            Object.defineProperty(this.proxy, watch, { configurable: true, enumerable: true, value: null });
-        }
-        return this;
+        return this.create(watch, null, callback);
     }
 
 }
-
-enum WatcherType { Changed, Destroyed }
 
 class WatcherItem {
 
@@ -87,4 +144,5 @@ class WatcherItem {
         this.type = type;
         this.callback = callback;
     }
+
 }

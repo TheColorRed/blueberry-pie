@@ -90,7 +90,7 @@ class MyClickComponent extends BerryBehavior {
     // If "click" was not defined, nothing would happen.
     click(){
         // Deletes the Object in 5 seconds
-        berryObject.destroy(this.berryObject, 5);
+        BerryObject.destroy(this.berryObject, 5);
     }
 
 }

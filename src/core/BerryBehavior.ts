@@ -24,10 +24,6 @@ export class BerryBehavior extends Component {
         return this;
     }
 
-    public when(key: any, startValue: any) {
-        return new When({}, key, startValue);
-    }
-
 }
 
 

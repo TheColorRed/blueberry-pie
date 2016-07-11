@@ -4,10 +4,10 @@ export class Time {
     private static _deltaTime: number = 0;
     private static _time: number = 0;
 
-    protected static get deltaTime(): number {
+    public static get deltaTime(): number {
         return this._deltaTime;
     }
-    protected static get time(): number {
+    public static get time(): number {
         return this._time;
     }
 

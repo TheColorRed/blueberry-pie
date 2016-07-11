@@ -1,4 +1,8 @@
-import { Watch } from './Watcher';
+import { Watch, WatcherType } from './Watcher';
+
+export function when(key: any, startValue: any) {
+    return new When({}, key, startValue);
+}
 
 export class When extends Watch {
 
@@ -62,56 +66,100 @@ export class When extends Watch {
                     $this.ranLessThanOrEqualCallback = true;
                 }
                 return true;
-            },
-            defineProperty: function (obj, prop, value): boolean {
-                obj[prop] = value;
-                return true;
             }
         });
         var $this = this;
 
         this.a = a;
-        this.proxy[a] = defaultValue;
+        this.create(a, defaultValue);
     }
 
+    /**
+     * When a == b
+     *
+     * @param {string} b
+     * @param {*} defaultValue
+     * @param {Function} callback
+     * @returns {this}
+     */
     public equals(b: string, defaultValue: any, callback: Function): this {
         this.b = b;
-        this.proxy[b] = defaultValue;
+        this.create(b, defaultValue, callback);
         this.equalsCallback = callback;
         return this;
     }
 
+    /**
+     * When a != b
+     *
+     * @param {string} b
+     * @param {*} defaultValue
+     * @param {Function} callback
+     * @returns {this}
+     */
     public notEqual(b: string, defaultValue: any, callback: Function): this {
         this.b = b;
-        this.proxy[b] = defaultValue;
+        this.create(b, defaultValue, callback);
         this.notEqualCallback = callback;
         return this;
     }
 
+    /**
+     * When a > b
+     *
+     * @param {string} b
+     * @param {*} defaultValue
+     * @param {Function} callback
+     * @returns {this}
+     */
     public greaterThan(b: string, defaultValue: any, callback: Function): this {
         this.b = b;
-        this.proxy[b] = defaultValue;
+        this.create(b, defaultValue, callback);
         this.greaterThanCallback = callback;
         return this;
     }
 
+    /**
+     * When a >= b
+     *
+     * @param {string} b
+     * @param {*} defaultValue
+     * @param {Function} callback
+     * @returns {this}
+     */
     public greaterThanOrEqual(b: string, defaultValue: any, callback: Function): this {
         this.b = b;
-        this.proxy[b] = defaultValue;
+        this.create(b, defaultValue, callback);
         this.greaterThanOrEqualCallback = callback;
         return this;
     }
 
+    /**
+     * When a < b
+     *
+     * @param {string} b
+     * @param {*} defaultValue
+     * @param {Function} callback
+     * @returns {this}
+     */
     public lessThan(b: string, defaultValue: any, callback: Function): this {
         this.b = b;
-        this.proxy[b] = defaultValue;
+        this.create(b, defaultValue, callback);
         this.lessThanCallback = callback;
         return this;
     }
 
+    /**
+     * When a <= b
+     *
+     * @param {string} b
+     * @param {*} defaultValue
+     * @param {Function} callback
+     * @returns {this}
+     */
     public lessThanOrEqual(b: string, defaultValue: any, callback: Function): this {
         this.b = b;
-        this.proxy[b] = defaultValue;
+        this.create(b, defaultValue, callback);
         this.lessThanOrEqualCallback = callback;
         return this;
     }

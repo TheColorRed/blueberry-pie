@@ -3,6 +3,7 @@ import { Berry } from './Berry'
 import { BerryObject } from './BerryObject'
 import { BerryManager } from './managers/BerryManager'
 import { Time } from '../utils/Time'
+import { Settings } from '../utils/Settings'
 
 export class Blueberry extends BerryBehavior {
 
@@ -12,7 +13,7 @@ export class Blueberry extends BerryBehavior {
     // Blueberry main loop values
     ////////////////////////////////////////////////////////////////////////////
     private lastLoopTime = this.getNanoSeconds;// * 1000;
-    private targetFps = 240;
+    private targetFps = Settings.fps;
     private optimalTime = 1000000000 / this.targetFps;
     private lastFpsTime = 0;
 
@@ -87,7 +88,7 @@ export class Blueberry extends BerryBehavior {
                 $this.addBerryComponents(berryObject, node);
 
                 // Send an awake message
-                berryObject.sendMessage('awake');
+                // berryObject.sendMessage('awake');
 
                 // Adds the berryObject to the array
                 berryObjects.push(berryObject);
