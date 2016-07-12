@@ -8,8 +8,6 @@ export class BerryBehavior extends Component {
 
     private _becameEnabled: boolean = false;
 
-    public hasAwaken: boolean = false;
-    public hasStarted: boolean = false;
     public isEnabled: boolean = false;
     public lastFrameEnabled: boolean = false;
 

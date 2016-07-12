@@ -1,6 +1,7 @@
 import { BerryObject } from './BerryObject';
 import { Component } from './Component';
 import { Vector2 } from '../utils/Vector';
+import { Color } from '../utils/Color';
 
 export class Item {
 
@@ -16,8 +17,6 @@ export class Item {
     public shouldDisable: boolean = false;
     public shouldEnable: boolean = false;
     public lastFrameEnabled: boolean = false;
-    public hasStarted: boolean = false;
-    public hasAwaken: boolean = false;
     public isVisible: boolean = false;
 
     public shouldDestroy: boolean = false;
@@ -44,18 +43,40 @@ export class Item {
         return this.components;
     }
 
-    public get position(): Vector2 {
-        var rect: ClientRect;
-        try {
-            rect = this.htmlBerry.getBoundingClientRect();
-        } catch (e) {
-            rect = this.berryObject.htmlBerry.getBoundingClientRect();
-        }
+    public get localPosition(): Vector2 {
+        var rect = this.clientRect();
         return new Vector2(rect.left, rect.top);
+    }
+
+    public get localScale(): Vector2 {
+        var rect = this.clientRect();
+        return new Vector2(rect.width, rect.height);
+    }
+
+    public get backgroundColor(): Color {
+        var color: string;
+        try {
+            color = this.htmlBerry.style.backgroundColor;
+        } catch (e) {
+            color = this.berryObject.htmlBerry.style.backgroundColor;
+        }
+        var c = color.replace(/[a-z \(\)]/g, '').split(',');
+        return new Color(parseInt(c[0]), parseInt(c[1]), parseInt(c[2]));
     }
 
     public static destroy(item: Item, delay: number = 0) {
         item.shouldDestroy = true;
         item.destroyDelay = delay;
     }
+
+    private clientRect(): ClientRect {
+        var rect: ClientRect;
+        try {
+            rect = this.htmlBerry.getBoundingClientRect();
+        } catch (e) {
+            rect = this.berryObject.htmlBerry.getBoundingClientRect();
+        }
+        return rect;
+    }
+
 }

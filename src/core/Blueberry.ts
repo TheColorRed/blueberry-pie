@@ -192,9 +192,7 @@ export class Blueberry extends BerryBehavior {
      */
     private berriesAwake(): void {
         BerryManager.berries.forEach(berry => {
-            if (!berry.hasAwaken) {
-                berry.sendMessage('awake');
-            }
+            berry.sendMessage('awake');
         });
     }
 
@@ -221,9 +219,7 @@ export class Blueberry extends BerryBehavior {
      */
     private berriesStart(): void {
         BerryManager.berries.forEach(berry => {
-            if (!berry.hasStarted) {
-                berry.sendMessage('start');
-            }
+            berry.sendMessage('start');
         });
     }
 

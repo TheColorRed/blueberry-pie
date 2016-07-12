@@ -132,12 +132,12 @@ export class BerryObject extends Item {
     public addComponent<T extends BerryBehavior>(component: string, options?: { any }): Component {
         let comp = new window[component]() as T;
         comp.options = options;
+        comp.name = component;
         comp.setBerryObject(this);
         comp.behavior = comp;
         comp.isVisible = this.isVisible;
         comp.isEnabled = this.isEnabled;
         this.components.push(comp);
-        this.sendMessage('awake');
         return comp;
     }
 
@@ -172,6 +172,12 @@ export class BerryObject extends Item {
             return;
         }
         this.components.forEach(comp => {
+            if ((comp.hasAwaken && message == 'awake') || (comp.hasStarted && message == 'start') || !comp.isEnabled) {
+                return;
+            }
+            if (!comp.hasAwaken && !comp.hasStarted && (message == 'update' || message == 'lateUpdate')) {
+                return;
+            }
             if (typeof comp.behavior[message] == 'function' && comp.isEnabled) {
                 if (message == 'click') {
                     options.event.preventDefault();
@@ -179,12 +185,10 @@ export class BerryObject extends Item {
                 comp.behavior[message]();
             }
             if (message == 'awake') {
-                comp.behavior.hasAwaken = true;
-                this.hasAwaken = true;
+                comp.hasAwaken = true;
             }
             if (message == 'start') {
-                comp.behavior.hasStarted = true;
-                this.hasStarted = true;
+                comp.hasStarted = true;
             }
             if (message == 'onEnable') {
                 comp.behavior.isEnabled = true;
@@ -197,11 +201,15 @@ export class BerryObject extends Item {
         });
     }
 
-    public css(property: string, value: any): this {
+    public css(property: string, value: any = null): this {
         if (typeof value == 'number') {
             value = value + Settings.units;
         }
-        this.htmlBerry.style[property] = value;
+        if (value != null) {
+            this.htmlBerry.style[property] = value;
+        } else {
+            return this.htmlBerry.style[property];
+        }
         return this;
     }
 }

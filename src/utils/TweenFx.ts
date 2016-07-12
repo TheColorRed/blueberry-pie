@@ -2,29 +2,16 @@ import { Mathf } from './Mathf';
 import { Time } from './Time';
 import { BerryObject } from '../core/BerryObject';
 import { Vector2 } from './Vector';
+import { EaseType, TweenSettings } from '../components/Tween';
 
-export enum EaseType {
-    EaseInBounce, EaseOutBounce, EaseInOutBounce,
-    EaseInBack, EaseOutBack, EaseInOutBack,
-    EaseInElastic, EaseOutElastic, EaseInOutElastic,
-    EaseInCirc, EaseOutCirc, EaseInOutCirc,
-    EaseInExpo, EaseOutExpo, EaseInOutExpo,
-    EaseInSine, EaseOutSine, EaseInOutSine,
-    EaseInQuint, EaseOutQuint, EaseInOutQuint,
-    EaseInQuart, EaseOutQuart, EaseInOutQuart,
-    EaseInQuad, EaseOutQuad, EaseInOutQuad,
-    EaseInCubic, EaseOutCubic, EaseInOutCubic,
-    Clerp, Spring, Linear
-}
-
-export class Tween {
+export class TweenFx {
 
     ////////////////////////////////////////////////////////////////////////////
     /// Bounce
     ////////////////////////////////////////////////////////////////////////////
     private static easeInBounce(start: number, end: number, value: number): number {
 		end -= start;
-		return end - Tween.easeOutBounce(0, end, 1 - value) + start;
+		return end - TweenFx.easeOutBounce(0, end, 1 - value) + start;
     }
 
     private static easeOutBounce(start: number, end: number, value: number): number {
@@ -45,8 +32,8 @@ export class Tween {
     }
 	private static easeInOutBounce(start: number, end: number, value: number): number {
 		end -= start;
-		if (value < 1 / 2) return Tween.easeInBounce(0, end, value * 2) * 0.5 + start;
-		else return Tween.easeOutBounce(0, end, value * 2 - 1) * 0.5 + end * 0.5 + start;
+		if (value < 1 / 2) return TweenFx.easeInBounce(0, end, value * 2) * 0.5 + start;
+		else return TweenFx.easeOutBounce(0, end, value * 2 - 1) * 0.5 + end * 0.5 + start;
 	}
 
     private static easeOut(start: number, end: number, value: number) {
@@ -329,97 +316,86 @@ export class Tween {
 		return start + (end - start) * value;
     }
 
-    public static animate(start: number, end: number, duration: number, easeType: EaseType = EaseType.Linear) {
-        var val = Mathf.lerp(start, end, Time.time / duration);
-        if (val >= end) { return end; }
+    public static animate(start: number, end: number, time: number, easeType: EaseType = EaseType.Linear) {
         switch (easeType) {
             case EaseType.Linear:
-                return Mathf.lerp(start, end, Time.time / duration);
+                return Mathf.lerp(start, end, time);
             // Ease Bounce
             case EaseType.EaseInBounce:
-                return Tween.easeInBounce(start, end, Time.time / duration);
+                return TweenFx.easeInBounce(start, end, time);
             case EaseType.EaseOutBounce:
-                return Tween.easeOutBounce(start, end, Time.time / duration);
+                return TweenFx.easeOutBounce(start, end, time);
             case EaseType.EaseInOutBounce:
-                return Tween.easeInOutBounce(start, end, Time.time / duration);
+                return TweenFx.easeInOutBounce(start, end, time);
             // Ease back
             case EaseType.EaseInBack:
-                return Tween.easeInBack(start, end, Time.time / duration);
+                return TweenFx.easeInBack(start, end, time);
             case EaseType.EaseOutBack:
-                return Tween.easeOutBack(start, end, Time.time / duration);
+                return TweenFx.easeOutBack(start, end, time);
             case EaseType.EaseInOutBack:
-                return Tween.easeInOutBack(start, end, Time.time / duration);
+                return TweenFx.easeInOutBack(start, end, time);
             // Ease elastic
             case EaseType.EaseInElastic:
-                return Tween.easeInElastic(start, end, Time.time / duration);
+                return TweenFx.easeInElastic(start, end, time);
             case EaseType.EaseOutElastic:
-                return Tween.easeOutElastic(start, end, Time.time / duration);
+                return TweenFx.easeOutElastic(start, end, time);
             case EaseType.EaseInOutElastic:
-                return Tween.easeInOutElastic(start, end, Time.time / duration);
+                return TweenFx.easeInOutElastic(start, end, time);
             // Ease Circ
             case EaseType.EaseInCirc:
-                return Tween.easeInCirc(start, end, Time.time / duration);
+                return TweenFx.easeInCirc(start, end, time);
             case EaseType.EaseOutCirc:
-                return Tween.easeOutCirc(start, end, Time.time / duration);
+                return TweenFx.easeOutCirc(start, end, time);
             case EaseType.EaseInOutCirc:
-                return Tween.easeInOutCirc(start, end, Time.time / duration);
+                return TweenFx.easeInOutCirc(start, end, time);
             // Ease Expo
             case EaseType.EaseInExpo:
-                return Tween.easeInExpo(start, end, Time.time / duration);
+                return TweenFx.easeInExpo(start, end, time);
             case EaseType.EaseOutExpo:
-                return Tween.easeOutExpo(start, end, Time.time / duration);
+                return TweenFx.easeOutExpo(start, end, time);
             case EaseType.EaseInOutExpo:
-                return Tween.easeInOutExpo(start, end, Time.time / duration);
+                return TweenFx.easeInOutExpo(start, end, time);
             // Ease Sine
             case EaseType.EaseInSine:
-                return Tween.easeInSine(start, end, Time.time / duration);
+                return TweenFx.easeInSine(start, end, time);
             case EaseType.EaseOutSine:
-                return Tween.easeOutSine(start, end, Time.time / duration);
+                return TweenFx.easeOutSine(start, end, time);
             case EaseType.EaseInOutSine:
-                return Tween.easeInOutSine(start, end, Time.time / duration);
+                return TweenFx.easeInOutSine(start, end, time);
             // Ease Quint
             case EaseType.EaseInQuint:
-                return Tween.easeInQuint(start, end, Time.time / duration);
+                return TweenFx.easeInQuint(start, end, time);
             case EaseType.EaseOutQuint:
-                return Tween.easeOutQuint(start, end, Time.time / duration);
+                return TweenFx.easeOutQuint(start, end, time);
             case EaseType.EaseInOutQuint:
-                return Tween.easeInOutQuint(start, end, Time.time / duration);
+                return TweenFx.easeInOutQuint(start, end, time);
             // Ease Quart
             case EaseType.EaseInQuart:
-                return Tween.easeInQuart(start, end, Time.time / duration);
+                return TweenFx.easeInQuart(start, end, time);
             case EaseType.EaseOutQuart:
-                return Tween.easeOutQuart(start, end, Time.time / duration);
+                return TweenFx.easeOutQuart(start, end, time);
             case EaseType.EaseInOutQuart:
-                return Tween.easeInOutQuart(start, end, Time.time / duration);
+                return TweenFx.easeInOutQuart(start, end, time);
             // Ease Cubic
             case EaseType.EaseInCubic:
-                return Tween.easeInCubic(start, end, Time.time / duration);
+                return TweenFx.easeInCubic(start, end, time);
             case EaseType.EaseOutCubic:
-                return Tween.easeOutCubic(start, end, Time.time / duration);
+                return TweenFx.easeOutCubic(start, end, time);
             case EaseType.EaseInOutCubic:
-                return Tween.easeInOutCubic(start, end, Time.time / duration);
+                return TweenFx.easeInOutCubic(start, end, time);
             // Ease Quad
             case EaseType.EaseInQuad:
-                return Tween.easeInQuad(start, end, Time.time / duration);
+                return TweenFx.easeInQuad(start, end, time);
             case EaseType.EaseOutQuad:
-                return Tween.easeOutQuad(start, end, Time.time / duration);
+                return TweenFx.easeOutQuad(start, end, time);
             case EaseType.EaseInOutQuad:
-                return Tween.easeInOutQuad(start, end, Time.time / duration);
+                return TweenFx.easeInOutQuad(start, end, time);
             // Ease Clerp
             case EaseType.Clerp:
-                return Tween.clerp(start, end, Time.time / duration);
+                return TweenFx.clerp(start, end, time);
             case EaseType.Spring:
-                return Tween.spring(start, end, Time.time / duration);
+                return TweenFx.spring(start, end, time);
         }
     }
-
-}
-
-export class TweenSettings {
-
-    public object: BerryObject;
-    public end: Vector2 = Vector2.zero;
-    public duration: number = 2;
-    public easeType: EaseType = EaseType.Linear;
 
 }
