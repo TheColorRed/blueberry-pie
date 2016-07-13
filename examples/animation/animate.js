@@ -9,6 +9,10 @@ class Master extends BerryBehavior {
 
 class Test extends BerryBehavior {
 
+    update() {
+
+    }
+
     awake() {
         Tween.colorTo({
             target: this.berryObject,

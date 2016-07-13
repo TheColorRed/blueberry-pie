@@ -11,7 +11,7 @@ gulp.task('build', () => {
         .add('./src/main.ts')
         .plugin(tsify)
         .bundle()
-        .on('error', function(error) {
+        .on('error', function (error) {
             console.error(error);
         })
         .pipe(source('blueberry.js'))
@@ -23,7 +23,7 @@ gulp.task('build', () => {
         //     mangle: false,
         //     compress: false
         // }))
-        .pipe(gulp.dest('build/'))
+        .pipe(gulp.dest('build/'));
 
 });
 

@@ -1,0 +1,50 @@
+<html>
+<head>
+    <title>Image color blending</title>
+    <script src="../../build/blueberry.js"></script>
+    <script>
+        class ColorBlending extends BerryBehavior {
+
+            awake() {
+                var imageObj1 = new Image();
+                var imageObj2 = new Image();
+                imageObj1.src = './images/gsd_puppy.jpg';
+                var ctx = this.berryObject.htmlBerry.getContext('2d');
+                var p = new Promise(resolve => {
+                    var data1, data2;
+                    imageObj1.onload = function(){
+                        ctx.drawImage(imageObj1, 0, 0);
+                        data1 = ctx.getImageData(0, 0, imageObj1.width, imageObj1.height);
+                        imageObj2.src = './images/kittens.jpg';
+                        imageObj2.onload = function(){
+                            ctx.drawImage(imageObj2, 0, 0);
+                            data2 = ctx.getImageData(0, 0, imageObj2.width, imageObj2.height);
+                            resolve([data1, data2]);
+                        }
+                    }
+                }).then(data => {
+                    var img = [];
+                    var img1 = data[0].data;
+                    var img2 = data[1].data;
+                    for(var i = 0; i < img1.length; i += 4){
+                        var c1 = new Color(img1[i],img1[i+1],img1[i+2]);
+                        var c2 = new Color(img2[i],img2[i+1],img2[i+2]);
+                        var c = Color.blend(c1, c2, Color.BlendType.Screen);
+                        img.push(c.r);
+                        img.push(c.g);
+                        img.push(c.b);
+                        img.push(c.a);
+                    }
+                    var imgd = new ImageData(Uint8ClampedArray.from(img), 500, 500);
+                    ctx.putImageData(imgd, 0, 0);
+                });
+            }
+
+        }
+        window.colorBlending = ColorBlending;
+    </script>
+</head>
+<body>
+    <canvas blueberry="canvas" component="colorBlending" width="500" height="500"></canvas>
+</body>
+</html>

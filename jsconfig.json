@@ -3,12 +3,8 @@
 	// for the documentation about the jsconfig.json format
 	"compilerOptions": {
 		"target": "es5",
-		"module": "commonjs",
 		"allowSyntheticDefaultImports": true
 	},
-    "files": [
-        "build/blueberry.min.js"
-    ],
 	"exclude": [
 		"node_modules",
 		"bower_components",

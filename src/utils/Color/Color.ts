@@ -7,13 +7,13 @@ export class Color {
     public b: number;
     public a: number;
 
-    public constructor(r: any, g: number, b: number, a: number = 1) {
+    public constructor(r: any, g: number, b: number, a: number = 255) {
         if (typeof r == 'string') {
             var c: Color = Color.rgb(r);
             this.r = c.r;
             this.g = c.g;
             this.b = c.b;
-            this.a = a;
+            this.a = c.a;
         } else {
             this.r = r;
             this.g = g;
@@ -51,135 +51,160 @@ export class Color {
     }
 
     public static blend(color1: Color, color2: Color, blendType: BlendType): Color {
-        var r: number, g: number, b: number;
+        var r: number, g: number, b: number, a: number;
         switch (blendType) {
             case BlendType.Normal:
                 r = ColorBlend.normal(color1.r, color2.r);
                 g = ColorBlend.normal(color1.g, color2.g);
                 b = ColorBlend.normal(color1.b, color2.b);
+                a = ColorBlend.normal(color1.a, color2.a);
                 break;
             case BlendType.Lighten:
                 r = ColorBlend.lighten(color1.r, color2.r);
                 g = ColorBlend.lighten(color1.g, color2.g);
                 b = ColorBlend.lighten(color1.b, color2.b);
+                a = ColorBlend.lighten(color1.a, color2.a);
                 break;
             case BlendType.Darken:
                 r = ColorBlend.darken(color1.r, color2.r);
                 g = ColorBlend.darken(color1.g, color2.g);
                 b = ColorBlend.darken(color1.b, color2.b);
+                a = ColorBlend.darken(color1.a, color2.a);
                 break;
             case BlendType.Multiply:
                 r = ColorBlend.multiply(color1.r, color2.r);
                 g = ColorBlend.multiply(color1.g, color2.g);
                 b = ColorBlend.multiply(color1.b, color2.b);
+                a = ColorBlend.multiply(color1.a, color2.a);
                 break;
             case BlendType.Average:
                 r = ColorBlend.average(color1.r, color2.r);
                 g = ColorBlend.average(color1.g, color2.g);
                 b = ColorBlend.average(color1.b, color2.b);
+                a = ColorBlend.average(color1.a, color2.a);
                 break;
             case BlendType.Add:
                 r = ColorBlend.add(color1.r, color2.r);
                 g = ColorBlend.add(color1.g, color2.g);
                 b = ColorBlend.add(color1.b, color2.b);
+                a = ColorBlend.add(color1.a, color2.a);
                 break;
             case BlendType.Subtract:
                 r = ColorBlend.subtract(color1.r, color2.r);
                 g = ColorBlend.subtract(color1.g, color2.g);
                 b = ColorBlend.subtract(color1.b, color2.b);
+                a = ColorBlend.subtract(color1.a, color2.a);
                 break;
             case BlendType.Difference:
                 r = ColorBlend.difference(color1.r, color2.r);
                 g = ColorBlend.difference(color1.g, color2.g);
                 b = ColorBlend.difference(color1.b, color2.b);
+                a = ColorBlend.difference(color1.a, color2.a);
                 break;
             case BlendType.Negation:
                 r = ColorBlend.negation(color1.r, color2.r);
                 g = ColorBlend.negation(color1.g, color2.g);
                 b = ColorBlend.negation(color1.b, color2.b);
+                a = ColorBlend.negation(color1.a, color2.a);
                 break;
             case BlendType.Screen:
                 r = ColorBlend.screen(color1.r, color2.r);
                 g = ColorBlend.screen(color1.g, color2.g);
                 b = ColorBlend.screen(color1.b, color2.b);
+                a = ColorBlend.screen(color1.a, color2.a);
                 break;
             case BlendType.Exclusion:
                 r = ColorBlend.exclusion(color1.r, color2.r);
                 g = ColorBlend.exclusion(color1.g, color2.g);
                 b = ColorBlend.exclusion(color1.b, color2.b);
+                a = ColorBlend.exclusion(color1.a, color2.a);
                 break;
             case BlendType.Overlay:
                 r = ColorBlend.overlay(color1.r, color2.r);
                 g = ColorBlend.overlay(color1.g, color2.g);
                 b = ColorBlend.overlay(color1.b, color2.b);
+                a = ColorBlend.overlay(color1.a, color2.a);
                 break;
             case BlendType.SoftLight:
                 r = ColorBlend.softLight(color1.r, color2.r);
                 g = ColorBlend.softLight(color1.g, color2.g);
                 b = ColorBlend.softLight(color1.b, color2.b);
+                a = ColorBlend.softLight(color1.a, color2.a);
                 break;
             case BlendType.HardLight:
                 r = ColorBlend.hardLight(color1.r, color2.r);
                 g = ColorBlend.hardLight(color1.g, color2.g);
                 b = ColorBlend.hardLight(color1.b, color2.b);
+                a = ColorBlend.hardLight(color1.a, color2.a);
                 break;
             case BlendType.ColorDodge:
                 r = ColorBlend.colorDodge(color1.r, color2.r);
                 g = ColorBlend.colorDodge(color1.g, color2.g);
                 b = ColorBlend.colorDodge(color1.b, color2.b);
+                a = ColorBlend.colorDodge(color1.a, color2.a);
                 break;
             case BlendType.ColorBurn:
                 r = ColorBlend.colorBurn(color1.r, color2.r);
                 g = ColorBlend.colorBurn(color1.g, color2.g);
                 b = ColorBlend.colorBurn(color1.b, color2.b);
+                a = ColorBlend.colorBurn(color1.a, color2.a);
                 break;
             case BlendType.LinearDodge:
                 r = ColorBlend.linearDodge(color1.r, color2.r);
                 g = ColorBlend.linearDodge(color1.g, color2.g);
                 b = ColorBlend.linearDodge(color1.b, color2.b);
+                a = ColorBlend.linearDodge(color1.a, color2.a);
                 break;
             case BlendType.LinearBurn:
                 r = ColorBlend.linearBurn(color1.r, color2.r);
                 g = ColorBlend.linearBurn(color1.g, color2.g);
                 b = ColorBlend.linearBurn(color1.b, color2.b);
+                a = ColorBlend.linearBurn(color1.a, color2.a);
                 break;
             case BlendType.LinearLight:
                 r = ColorBlend.linearLight(color1.r, color2.r);
                 g = ColorBlend.linearLight(color1.g, color2.g);
                 b = ColorBlend.linearLight(color1.b, color2.b);
+                a = ColorBlend.linearLight(color1.a, color2.a);
                 break;
             case BlendType.VividLight:
                 r = ColorBlend.vividLight(color1.r, color2.r);
                 g = ColorBlend.vividLight(color1.g, color2.g);
                 b = ColorBlend.vividLight(color1.b, color2.b);
+                a = ColorBlend.vividLight(color1.a, color2.a);
                 break;
             case BlendType.PinLight:
                 r = ColorBlend.pinLight(color1.r, color2.r);
                 g = ColorBlend.pinLight(color1.g, color2.g);
                 b = ColorBlend.pinLight(color1.b, color2.b);
+                a = ColorBlend.pinLight(color1.a, color2.a);
                 break;
             case BlendType.HardMix:
                 r = ColorBlend.hardMix(color1.r, color2.r);
                 g = ColorBlend.hardMix(color1.g, color2.g);
                 b = ColorBlend.hardMix(color1.b, color2.b);
+                a = ColorBlend.hardMix(color1.a, color2.a);
                 break;
             case BlendType.Reflect:
                 r = ColorBlend.reflect(color1.r, color2.r);
                 g = ColorBlend.reflect(color1.g, color2.g);
                 b = ColorBlend.reflect(color1.b, color2.b);
+                a = ColorBlend.reflect(color1.a, color2.a);
                 break;
             case BlendType.Glow:
                 r = ColorBlend.glow(color1.r, color2.r);
                 g = ColorBlend.glow(color1.g, color2.g);
                 b = ColorBlend.glow(color1.b, color2.b);
+                a = ColorBlend.glow(color1.a, color2.a);
                 break;
             case BlendType.Phoenix:
                 r = ColorBlend.phoenix(color1.r, color2.r);
                 g = ColorBlend.phoenix(color1.g, color2.g);
                 b = ColorBlend.phoenix(color1.b, color2.b);
+                a = ColorBlend.phoenix(color1.a, color2.a);
                 break;
         }
-        return new Color(r, g, b);
+        return new Color(r, g, b, a);
     }
 
     public get invert(): Color {
