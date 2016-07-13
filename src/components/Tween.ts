@@ -1,5 +1,5 @@
 import { Vector2 } from '../utils/Vector';
-import { Color } from '../utils/Color';
+import { Color } from '../utils/Color/Color';
 import { Time } from '../utils/Time';
 import { TweenFx } from '../utils/TweenFx';
 import { BerryObject } from '../core/BerryObject';
@@ -62,7 +62,6 @@ export class Tween extends BerryBehavior {
     protected loopType: LoopType;
     protected units: string;
 
-    protected startTime: number = 0;
     protected percentage: number = 0;
     protected runningTime: number = 0;
 
@@ -82,9 +81,8 @@ export class Tween extends BerryBehavior {
         } else if (this.tweenType == TweenType.Move){
             this.endVector = this.settings.endPosition || Vector2.one;
         }
-        this.berryObject.css('position', 'absolute')
+        this.berryObject.css('position', 'absolute');
         this.isRunning = true;
-        this.startTime = Time.time;
     }
 
     public update() {
@@ -226,7 +224,6 @@ export class Tween extends BerryBehavior {
             Math.round(TweenFx.animate(this.initColor.g, end.g, this.time, this.easeType)),
             Math.round(TweenFx.animate(this.initColor.b, end.b, this.time, this.easeType))
         );
-        console.log(TweenFx.animate(this.initColor.r, end.r, this.time, this.easeType))
         this.berryObject.css('background-color', '#' + color.hex());
     }
 
@@ -251,6 +248,7 @@ export class Tween extends BerryBehavior {
     public static colorTo(settings: TweenSettings) {
         var comp: Tween = Tween.init(settings);
         comp.tweenType = TweenType.Color;
+        console.log(comp.berryObject.backgroundColor)
         comp.initColor = comp.berryObject.backgroundColor;
     }
 

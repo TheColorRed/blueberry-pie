@@ -1,7 +1,7 @@
 import { BerryObject } from './BerryObject';
 import { Component } from './Component';
 import { Vector2 } from '../utils/Vector';
-import { Color } from '../utils/Color';
+import { Color } from '../utils/Color/Color';
 
 export class Item {
 
@@ -54,12 +54,13 @@ export class Item {
     }
 
     public get backgroundColor(): Color {
-        var color: string;
+        var element: HTMLElement;
         try {
-            color = this.htmlBerry.style.backgroundColor;
+            element = this.htmlBerry;
         } catch (e) {
-            color = this.berryObject.htmlBerry.style.backgroundColor;
+            element = this.berryObject.htmlBerry;
         }
+        var color: string = window.getComputedStyle(element).backgroundColor;
         var c = color.replace(/[a-z \(\)]/g, '').split(',');
         return new Color(parseInt(c[0]), parseInt(c[1]), parseInt(c[2]));
     }

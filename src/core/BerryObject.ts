@@ -5,6 +5,7 @@ import { Component } from './Component';
 import { BerryManager } from './managers/BerryManager';
 import { BerryGroup } from './BerryGroup';
 import { Settings } from '../utils/Settings';
+import { Color } from '../utils/Color/Color';
 
 export class BerryObject extends Item {
 
@@ -204,6 +205,8 @@ export class BerryObject extends Item {
     public css(property: string, value: any = null): this {
         if (typeof value == 'number') {
             value = value + Settings.units;
+        } else if (value instanceof Color) {
+            value = '#' + value.hex();
         }
         if (value != null) {
             this.htmlBerry.style[property] = value;

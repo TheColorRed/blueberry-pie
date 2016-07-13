@@ -1,70 +1,51 @@
 <html>
 <head>
-    <title>Http Test</title>
+    <title>Color Animation</title>
     <script src="../../build/blueberry.js"></script>
-    <script src="./animate.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100" rel="stylesheet">
     <style>
-        body{padding: 0;margin: 0;}
+        body{
+            padding: 0;
+            margin: 0;
+            background-color: #ff0000;
+            width: 100%;
+            height: 100vh;
+        }
+        h1{
+            font-family: 'Roboto', sans-serif;
+            font-size: 100px;
+            font-weight: 100;
+            color: #ffffff;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            height: 200px;
+            width: 100%;
+            z-index: 100;
+            text-align: center;
+        }
     </style>
+    <script>
+        class ColorMation extends BerryBehavior {
+
+            awake(){
+                this.berryObject.css('background-color', Color.cadetBlue)
+                Tween.colorTo({
+                    target: this.berryObject,
+                    endColor: Color.salmon,
+                    loopType: Tween.Looping.PingPong,
+                    duration: 5
+                });
+            }
+
+        }
+        window.colorMation = ColorMation;
+    </script>
 </head>
-<body blueberry="master" component="master">
-
-    <!--<section blueberry="Falling" component="test" style="position: absolute;width: 100%;height: 0;background-color: red;"></section>
-    <section style="height: 100vh;">
-        <h1>
-            Blueberry
-        </h1>
-    </section>-->
-
-
-    <!--<a href="" blueberry="link" tag="test 2" component="test">Berry test 2</a><br>
-    <a href="" blueberry="link" tag="test 3" component="test">Berry test 3</a>-->
-    <div style="background-color: #ff0000;width:800px;height: 500px;left:100px; position: absolute"></div>
-    <!--<p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p><a href="http://google.com">Berry test 1</a></p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>
-    <p>test</p>-->
+<body blueberry="master" component="colorMation">
+    <h1>Colormation!</h1>
 </body>
 </html>
