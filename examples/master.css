@@ -1,0 +1,5 @@
+@import 'https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700';
+
+body {font-family: 'Roboto', sans-serif;font-weight: 300;}
+h1   {font-weight: 100;text-align: center;margin-top: 50px;font-size: 50px;margin-bottom: 100px}
+h2   {font-weight: 100;text-align: center;margin-bottom: 50px;font-size: 30px;}

@@ -255,7 +255,7 @@ export class BerryObject extends Item {
                 if (message == 'click') {
                     options.event.preventDefault();
                 }
-                if (message == 'keyup' || message == 'keydown' || message == 'keypress') {
+                if (message == 'keyup' || message == 'keydown' || message == 'keypress' || message == 'change') {
                     comp.behavior[message](options.event);
                 } else {
                     comp.behavior[message](options);

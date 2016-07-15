@@ -2,23 +2,30 @@
 <head>
     <title>Image color blending</title>
     <script src="../../build/blueberry.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300" rel="stylesheet">
+    <link href="../master.css" rel="stylesheet">
     <script>
+        var blendType = 'Normal';
         class ColorBlending extends BerryBehavior {
-
-            awake() {
+            // Run the canvas for the first time
+            awake(){
+                this.updateCanvas();
+            }
+            // Update the canvas to reflect user settings
+            updateCanvas() {
                 var imageObj1 = new Image();
                 var imageObj2 = new Image();
-                imageObj1.src = './images/gsd_puppy.jpg';
                 var ctx = this.berryObject.htmlBerry.getContext('2d');
+                var self = this;
                 var p = new Promise(resolve => {
                     var data1, data2;
+                    imageObj1.src = './images/gsd_puppy.jpg';
                     imageObj1.onload = function(){
-                        ctx.drawImage(imageObj1, 0, 0);
-                        data1 = ctx.getImageData(0, 0, imageObj1.width, imageObj1.height);
+                        data1 = self.getImageData(imageObj1);
                         imageObj2.src = './images/kittens.jpg';
                         imageObj2.onload = function(){
-                            ctx.drawImage(imageObj2, 0, 0);
-                            data2 = ctx.getImageData(0, 0, imageObj2.width, imageObj2.height);
+                            data2 = self.getImageData(imageObj2);
                             resolve([data1, data2]);
                         }
                     }
@@ -29,7 +36,7 @@
                     for(var i = 0; i < img1.length; i += 4){
                         var c1 = new Color(img1[i],img1[i+1],img1[i+2]);
                         var c2 = new Color(img2[i],img2[i+1],img2[i+2]);
-                        var c = Color.blend(c1, c2, Color.BlendType.Screen);
+                        var c = Color.blend(c1, c2, Color.BlendType[blendType]);
                         img.push(c.r);
                         img.push(c.g);
                         img.push(c.b);
@@ -39,12 +46,54 @@
                     ctx.putImageData(imgd, 0, 0);
                 });
             }
+            // Get image data
+            getImageData(imgObj){
+                var canvas = document.createElement('canvas');
+                canvas.height = 500;
+                canvas.width = 500;
+                var context = canvas.getContext('2d');
+                context.drawImage(imgObj, 0, 0);
+                return context.getImageData(0, 0, imgObj.width, imgObj.height);
+            }
+        }
 
+        class Filters extends BerryBehavior {
+            // Create drop down of builtin blends
+            awake(){
+                for (var type in Color.BlendType) {
+                    if(isNaN(type)){
+                        this.berryObject.append(BerryObject.instantiate({ template: `<option value="${type}">${type}</option>` }));
+                    }
+                }
+            }
+            // When the drop down changes update the canvas
+            change(e){
+                blendType = e.target.value;
+                BerryObject.findWithName('Canvas').sendMessage('updateCanvas');
+            }
         }
         window.colorBlending = ColorBlending;
+        window.filters = Filters;
     </script>
 </head>
 <body>
-    <canvas blueberry="canvas" components="colorBlending" width="500" height="500"></canvas>
+    <div class="container text-center">
+        <div class="row">
+            <h1 class="col-sm-12">Blueberry Color Blending</h1>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <canvas blueberry="Canvas" components="colorBlending" width="500" height="500"></canvas>
+            </div>
+            <div class="col-sm-6 form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Blend Type</label>
+                    <div class="col-sm-9">
+                        <select class="form-control" blueberry="Filters" components="filters"></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

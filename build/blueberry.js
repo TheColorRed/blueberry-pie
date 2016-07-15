@@ -447,7 +447,7 @@ class BerryObject extends Item_1.Item {
                 if (message == 'click') {
                     options.event.preventDefault();
                 }
-                if (message == 'keyup' || message == 'keydown' || message == 'keypress') {
+                if (message == 'keyup' || message == 'keydown' || message == 'keypress' || message == 'change') {
                     comp.behavior[message](options.event);
                 }
                 else {
@@ -579,6 +579,9 @@ class Blueberry extends BerryBehavior_1.BerryBehavior {
                 });
                 node.addEventListener('keypress', e => {
                     berryObject.sendMessage('keypress', { event: e });
+                });
+                node.addEventListener('change', e => {
+                    berryObject.sendMessage('change', { event: e });
                 });
                 berryObject.isVisible = $this.isElementInViewport(berryObject);
                 $this.addBerryComponents(berryObject, node);

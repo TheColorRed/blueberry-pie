@@ -93,6 +93,10 @@ export class Blueberry extends BerryBehavior {
                     berryObject.sendMessage('keypress', { event: e });
                 });
 
+                node.addEventListener('change', e => {
+                    berryObject.sendMessage('change', { event: e });
+                });
+
                 // Check if the object is in the viewport
                 berryObject.isVisible = $this.isElementInViewport(berryObject);
 
