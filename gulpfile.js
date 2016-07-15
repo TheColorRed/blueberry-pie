@@ -20,8 +20,7 @@ gulp.task('build', () => {
         //     ext: {
         //         min: '.min.js'
         //     },
-        //     mangle: false,
-        //     compress: false
+        //     mangle: true
         // }))
         .pipe(gulp.dest('build/'));
 
