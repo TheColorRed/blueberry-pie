@@ -7,7 +7,6 @@
         body{
             padding: 0;
             margin: 0;
-            background-color: #ff0000;
             width: 100%;
             height: 100vh;
         }
@@ -31,10 +30,6 @@
     <script>
         class ColorMation extends BerryBehavior {
 
-            update(){
-
-            }
-
             awake(){
                 this.berryObject.css('background-color', Color.cadetBlue)
                 Tween.colorTo({
@@ -49,7 +44,7 @@
         window.colorMation = ColorMation;
     </script>
 </head>
-<body blueberry="master" component="colorMation">
+<body blueberry="master" components="colorMation">
     <h1>Colormation!</h1>
 </body>
 </html>

@@ -335,6 +335,7 @@ export class Color {
     public static get darkBlue(): Color { return new Color(0, 0, 139); }
     public static get navy(): Color { return new Color(0, 0, 128); }
     public static get midnighBlue(): Color { return new Color(25, 25, 112); }
+    public static get blueberry(): Color { return new Color(79, 134, 247); }
 
     // Browns
     public static get cornSilk(): Color { return new Color(255, 248, 220); }

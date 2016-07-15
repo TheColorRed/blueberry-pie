@@ -1,161 +1,101 @@
 <html>
 <head>
-    <title>Image color blending</title>
+    <title>Image color list</title>
     <script src="../../build/blueberry.js"></script>
-    <script>
-        class Colors extends BerryBehavior {
-
-            awake() {
-                for(var i in Color){
-                    console.log(Color[i])
-                }
-                // Color.indianRed
-                // Color.lightCoral
-                // Color.salmon
-                // Color.darkSalmon
-                // Color.crimson
-                // Color.red
-                // Color.firebrick
-                // Color.darkRed
-                // Color.pink
-                // Color.lightPink
-                // Color.hotPink
-                // Color.deepPink
-                // Color.mediumViolet
-                // Color.paleViolet
-                // Color.lightSalmon
-                // Color.coral
-                // Color.tomato
-                // Color.orangeRed
-                // Color.darkOrange
-                // Color.orange
-                // Color.gold
-                // Color.yellow
-                // Color.lightYellow
-                // Color.lemonChiffon
-                // Color.lightGoldenRodYellow
-                // Color.papayWhip
-                // Color.moccasin
-                // Color.peachPuff
-                // Color.paleGoldenRod
-                // Color.khaki
-                // Color.darkKhaki
-                // Color.lavender
-                // Color.thistle
-                // Color.plum
-                // Color.violet
-                // Color.orchid
-                // Color.fuchsia
-                // Color.magenta
-                // Color.mediumOrchid
-                // Color.mediumPurple
-                // Color.rebeccaPurple
-                // Color.blueViolet
-                // Color.darkViolet
-                // Color.darkOrchid
-                // Color.darkMagenta
-                // Color.purple
-                // Color.indigo
-                // Color.slateBlue
-                // Color.darkSlateBlue
-                // Color.greenYellow
-                // Color.chartreuse
-                // Color.lawnGreen
-                // Color.lime
-                // Color.limeGreen
-                // Color.paleGreen
-                // Color.lightGreen
-                // Color.mediumSpringGreen
-                // Color.springGreen
-                // Color.mediumSeaGreen
-                // Color.seaGreen
-                // Color.forestGreen
-                // Color.green
-                // Color.darkGreen
-                // Color.yellowGreen
-                // Color.oliveDrab
-                // Color.olive
-                // Color.darkOliveGreen
-                // Color.mediumAquaMarine
-                // Color.darkSeaGreen
-                // Color.lightSeaGreen
-                // Color.darkCyan
-                // Color.teal
-                // Color.cyan
-                // Color.lightCyan
-                // Color.paleTurquoise
-                // Color.aquaMarine
-                // Color.turquoise
-                // Color.mediumTurquoise
-                // Color.darkTurquoise
-                // Color.cadetBlue
-                // Color.steelBlue
-                // Color.lightSteelBlue
-                // Color.powderBlue
-                // Color.lightBlue
-                // Color.skyBlue
-                // Color.lightSkyBlue
-                // Color.deepSkyBlue
-                // Color.dodgerBlue
-                // Color.cornFlowerBlue
-                // Color.mediumSlateBlue
-                // Color.royalBlue
-                // Color.blue
-                // Color.mediumBlue
-                // Color.darkBlue
-                // Color.navy
-                // Color.midnighBlue
-                // Color.cornSilk
-                // Color.blanchedAlmond
-                // Color.bisque
-                // Color.navajoWhite
-                // Color.wheat
-                // Color.burlyWood
-                // Color.tan
-                // Color.rosyBrown
-                // Color.sandyBrown
-                // Color.goldenRod
-                // Color.darkGoldenRod
-                // Color.peru
-                // Color.chocolate
-                // Color.saddleBrown
-                // Color.sienna
-                // Color.brown
-                // Color.maroon
-                // Color.white
-                // Color.snow
-                // Color.honeyDew
-                // Color.mintCream
-                // Color.azure
-                // Color.aliceBlue
-                // Color.ghostWhite
-                // Color.whiteSmoke
-                // Color.seaShell
-                // Color.beige
-                // Color.oldLace
-                // Color.floralWhite
-                // Color.ivory
-                // Color.antiqueWhite
-                // Color.linen
-                // Color.lavenderBlush
-                // Color.mistyRose
-                // Color.gainsBoro
-                // Color.lightGray
-                // Color.silver
-                // Color.darkGray
-                // Color.gray
-                // Color.dimGray
-                // Color.lightSlateGray
-                // Color.slateGray
-                // Color.darkSlateGray
-                // Color.black
-            }
-
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300" rel="stylesheet">
+    <style>
+        body {font-family: 'Roboto', sans-serif;font-weight: 300;}
+        h1{font-weight: 100;text-align: center;margin-top: 50px;font-size: 50px;}
+        h2{font-weight: 100;text-align: center;margin-bottom: 50px;font-size: 30px;}
+        .input {margin-top: 100px;margin-bottom: 50px;}
+        .berries {margin: auto;width: 1400px;padding-left: 80px;}
+        .berry-text {float: left;}
+        .berry-container{
+            padding: 5px;
+            border-radius: 3px;
+            box-shadow: 0 0 5px rgba(0,0,0,.2);
+            float: left;
+            margin-bottom: 15px;
+            width: 300px;
+            margin-right: 15px;
         }
-        window.colors = Colors;
+        .berry-block {
+            height: 100px;
+            width: 100px;
+            float: left;
+            display: inline-block;
+            margin-right: 5px;
+            border-radius: 3px;
+        }
+    </style>
+    <script>
+
+        var colors = ['indianRed','lightCoral','salmon','darkSalmon','crimson','red','firebrick','darkRed','pink','lightPink','hotPink','deepPink','mediumViolet','paleViolet','lightSalmon','coral','tomato','orangeRed','darkOrange','orange','gold','yellow','lightYellow','lemonChiffon','lightGoldenRodYellow','papayWhip','moccasin','peachPuff','paleGoldenRod','khaki','darkKhaki','lavender','thistle','plum','violet','orchid','fuchsia','magenta','mediumOrchid','mediumPurple','rebeccaPurple','blueViolet','darkViolet','darkOrchid','darkMagenta','purple','indigo','slateBlue','darkSlateBlue','greenYellow','chartreuse','lawnGreen','lime','limeGreen','paleGreen','lightGreen','mediumSpringGreen','springGreen','mediumSeaGreen','seaGreen','forestGreen','green','darkGreen','yellowGreen','oliveDrab','olive','darkOliveGreen','mediumAquaMarine','darkSeaGreen','lightSeaGreen','darkCyan','teal','cyan','lightCyan','paleTurquoise','aquaMarine','turquoise','mediumTurquoise','darkTurquoise','cadetBlue','steelBlue','lightSteelBlue','powderBlue','lightBlue','skyBlue','lightSkyBlue','deepSkyBlue','blueberry','dodgerBlue','cornFlowerBlue','mediumSlateBlue','royalBlue','blue','mediumBlue','darkBlue','navy','midnighBlue','cornSilk','blanchedAlmond','bisque','navajoWhite','wheat','burlyWood','tan','rosyBrown','sandyBrown','goldenRod','darkGoldenRod','peru','chocolate','saddleBrown','sienna','brown','maroon','white','snow','honeyDew','mintCream','azure','aliceBlue','ghostWhite','whiteSmoke','seaShell','beige','oldLace','floralWhite','ivory','antiqueWhite','linen','lavenderBlush','mistyRose','gainsBoro','lightGray','silver','darkGray','gray','dimGray','lightSlateGray','slateGray','darkSlateGray','black'];
+
+        // Add all of the colors to the page
+        class ColorsManager extends BerryBehavior {
+            awake() {
+                colors.forEach(color => {
+                    this.berryObject.append(BerryObject.instantiate({
+                        template: `<div class="berry-container" blueberry="Container" tag="${color}">
+                            <div class="berry-block" blueberry="Item Color" components="colorBlock" tag="${color}"></div>
+                            <div class="berry-text" blueberry="" components="colorText" tag="${color}"></div>
+                        </div>`
+                    }));
+                });
+            }
+        }
+        // Create a search filter to show/hide items
+        class Filter extends BerryBehavior {
+            awake(){
+                this.search = BerryObject.findWithName('Search Results').text(`Displaying ${colors.length} of ${colors.length}`);
+            }
+            keyup(e) {
+                var value = new RegExp(`${e.target.value}`, 'i');
+                var total = 0;
+                BerryObject.findObjectsWithName('Container').forEach(item => {
+                    if(value.test(item.tag) || value.test(Color[item.tag].hex())){
+                        item.css('display', 'block');
+                        total++;
+                    }else{
+                        item.css('display', 'none');
+                    }
+                    this.search.text(`Displaying ${total} of ${colors.length}`);
+                });
+            }
+        }
+        // Display the text version of the box color
+        class ColorText extends BerryBehavior {
+            awake() {
+                var c = Color[this.berryObject.tag];
+                this.berryObject.html(`
+                    <p>Color.${this.berryObject.tag}</p>
+                    <p>#${c.hex()}</p>
+                    <p>rgba(${c.r}, ${c.g}, ${c.b}, ${c.a})</p>
+                `);
+            }
+        }
+        // Apply the color to the bock item
+        class ColorBlock extends BerryBehavior {
+            awake() {
+                this.berryObject.css('background-color', Color[this.berryObject.tag]);
+            }
+        }
+
+        // Register the components
+        window.colorsManager = ColorsManager;
+        window.filter = Filter;
+        window.colorBlock = ColorBlock;
+        window.colorText = ColorText;
     </script>
 </head>
-<body blueberry="colors" component="colors">
-
+<body>
+    <div class="container">
+        <h1>Built-in Blueberry Colors</h1>
+        <input placeholder="Search for a color by name or hex" class="input input-lg form-control" type="text" blueberry="Color Search" components="filter">
+        <h2 blueberry="Search Results"></h2>
+    </div>
+    <div class="berries" blueberry="Colors Manager" components="colorsManager"></div>
 </body>
 </html>

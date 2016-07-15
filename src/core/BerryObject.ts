@@ -92,6 +92,13 @@ export class BerryObject extends Item {
         return null;
     }
 
+    /**
+     * Converts existing elements into berry elements
+     *
+     * @static
+     * @param {string} selector
+     * @returns {BerryGroup}
+     */
     public static convert(selector: string): BerryGroup {
         let nodes: NodeListOf<HTMLElement> = document.querySelectorAll(selector) as NodeListOf<HTMLElement>;
         let berryGroup: BerryGroup = new BerryGroup();
@@ -106,6 +113,60 @@ export class BerryObject extends Item {
         return berryGroup;
     }
 
+    /**
+     * Creates a new instance of a berry object
+     *
+     * @static
+     * @param {*} object
+     * @returns {BerryObject}
+     */
+    public static instantiate(object: any): BerryObject {
+        let berry: BerryObject;
+        if (object instanceof BerryObject) {
+            let node: HTMLElement = document.createElement(object.htmlBerry.tagName) as HTMLElement;
+            berry = new BerryObject(node);
+        } else {
+            let node: HTMLElement;
+            if ('template' in object) {
+                var template: HTMLTemplateElement = document.createElement('template') as HTMLTemplateElement;
+                template.innerHTML = object.template;
+                node = template.content.firstChild as HTMLElement;
+                BerryObject.addTemplateBerries(node);
+            } else {
+                node = document.createElement(object.tagName) as HTMLElement;
+            }
+            node.setAttribute('blueberry', 'BerryObject');
+            berry = new BerryObject(node);
+            if ('name' in object) { berry.name = object.name; }
+            if ('tag' in object) { berry.tag = object.tag; }
+        }
+        return berry;
+    }
+
+
+    protected static addTemplateBerries(baseNode: HTMLElement) {
+        if (baseNode.hasAttribute('blueberry') || baseNode.hasAttribute('data-blueberry')) {
+            BerryObject.addBerry(baseNode);
+        }
+        var nodes: NodeListOf<HTMLElement> = baseNode.querySelectorAll('[blueberry],[data-blueberry]') as NodeListOf<HTMLElement>;
+        for (var i = 0; i < nodes.length; i++) {
+            var node: HTMLElement = nodes.item(i);
+            BerryObject.addBerry(node);
+        }
+    }
+
+    public static addBerry(node: HTMLElement) {
+        var berry: BerryObject = new BerryObject(node);
+        if (node.hasAttribute('components') || node.hasAttribute('data-components')) {
+            var component: string = node.getAttribute('components') || node.getAttribute('data-components') || '';
+            component.split(' ').forEach(component => {
+                berry.addComponent(component);
+            });
+        }
+        berry.name = node.getAttribute('blueberry') || node.getAttribute('data-blueberry') || '';
+        berry.tag = node.getAttribute('tag') || node.getAttribute('data-tag') || '';
+        BerryManager.berries.push(berry);
+    }
 
     /**
      * Finds the first blueberry object with a particular tag
@@ -131,7 +192,12 @@ export class BerryObject extends Item {
      * @returns {Component}
      */
     public addComponent<T extends BerryBehavior>(component: string, options?: { any }): Component {
-        let comp = new window[component]() as T;
+        let comp;
+        if (component in window) {
+            comp = new window[component]() as T;
+        } else {
+            comp = new BerryBehavior() as T;
+        }
         comp.options = options;
         comp.name = component;
         comp.setBerryObject(this);
@@ -162,6 +228,12 @@ export class BerryObject extends Item {
         this.shouldDisable = !value;
     }
 
+    public append() {
+        for (var i = 0; i < arguments.length; i++) {
+            this.htmlBerry.appendChild(arguments[i].htmlBerry);
+        }
+    }
+
     /**
      * Sends a message to all the enabled components on the current object
      * If the object itself is disabled so are all of it's components
@@ -183,7 +255,11 @@ export class BerryObject extends Item {
                 if (message == 'click') {
                     options.event.preventDefault();
                 }
-                comp.behavior[message]();
+                if (message == 'keyup' || message == 'keydown' || message == 'keypress') {
+                    comp.behavior[message](options.event);
+                } else {
+                    comp.behavior[message](options);
+                }
             }
             if (message == 'awake') {
                 comp.hasAwaken = true;
@@ -215,4 +291,37 @@ export class BerryObject extends Item {
         }
         return this;
     }
+
+    public addClass(name: any): this {
+        if (typeof name == 'object') {
+            name.forEach(n => {
+                this.htmlBerry.classList.add(n);
+            })
+        } else {
+            this.htmlBerry.classList.add(name);
+        }
+        return this;
+    }
+
+    public removeClass(name): this {
+        if (typeof name == 'object') {
+            name.forEach(n => {
+                this.htmlBerry.classList.remove(n);
+            })
+        } else {
+            this.htmlBerry.classList.remove(name);
+        }
+        return this;
+    }
+
+    public html(html: string): this {
+        this.htmlBerry.innerHTML = html;
+        return this;
+    }
+
+    public text(text: string): this {
+        this.htmlBerry.innerText = text;
+        return this;
+    }
+
 }

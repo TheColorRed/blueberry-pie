@@ -81,6 +81,18 @@ export class Blueberry extends BerryBehavior {
                     berryObject.sendMessage('click', { event: e });
                 });
 
+                node.addEventListener('keyup', e => {
+                    berryObject.sendMessage('keyup', { event: e });
+                });
+
+                node.addEventListener('keydown', e => {
+                    berryObject.sendMessage('keydown', { event: e });
+                });
+
+                node.addEventListener('keypress', e => {
+                    berryObject.sendMessage('keypress', { event: e });
+                });
+
                 // Check if the object is in the viewport
                 berryObject.isVisible = $this.isElementInViewport(berryObject);
 
@@ -171,8 +183,8 @@ export class Blueberry extends BerryBehavior {
      * @param {Element} node
      */
     private addBerryComponents(berry: BerryObject, node: Element): void {
-        if (node.hasAttribute('component') || node.hasAttribute('data-component')) {
-            var component: string = node.getAttribute('component') || node.getAttribute('data-component') || '';
+        if (node.hasAttribute('components') || node.hasAttribute('data-components')) {
+            var component: string = node.getAttribute('components') || node.getAttribute('data-components') || '';
             component.split(' ').forEach(component => {
                 berry.addComponent(component);
             });
